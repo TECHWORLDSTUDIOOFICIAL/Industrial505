@@ -1,357 +1,377 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nexova · Plataforma de gestión empresarial</title>
-<meta name="description" content="Nexova centraliza la operación de tu empresa: seguridad, velocidad y acceso desde cualquier lugar en un solo sistema.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>INDUSTRIAL 505 | Calzado y Equipo de Protección Personal</title>
+<meta name="description" content="INDUSTRIAL 505 — Distribución de calzado industrial, botas de seguridad y equipo de protección personal (EPP) certificado para la industria." />
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
 
-<!-- HEADER -->
-<header class="header" id="header">
-  <div class="container header__inner">
+<!-- ============ HEADER ============ -->
+<header class="site-header">
+  <div class="container">
     <a href="#inicio" class="brand">
-      <span class="brand__mark" aria-hidden="true">
-        <svg viewBox="0 0 32 32" width="32" height="32">
-          <rect width="32" height="32" rx="9" fill="url(#logoGrad)"/>
-          <path d="M9 21V11l14 10V11" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-          <defs>
-            <linearGradient id="logoGrad" x1="0" y1="0" x2="32" y2="32">
-              <stop offset="0" stop-color="#2F5FE0"/>
-              <stop offset="1" stop-color="#17C3B2"/>
-            </linearGradient>
-          </defs>
-        </svg>
+      <svg class="brand-mark" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect x="4" y="4" width="40" height="40" rx="8" fill="#0A2342"/>
+        <path d="M24 10 34 14v8c0 8-4.3 13.5-10 17-5.7-3.5-10-9-10-17v-8l10-4Z" fill="#F5F6F8"/>
+        <path d="M24 10 34 14v8c0 8-4.3 13.5-10 17V10Z" fill="#F2A900"/>
+      </svg>
+      <span>
+        <span class="brand-word">INDUSTRIAL<span>505</span></span>
+        <span class="brand-tag">Equipo &amp; Protección</span>
       </span>
-      <span class="brand__name">Nexova</span>
     </a>
 
-    <nav class="nav" id="nav">
-      <a href="#inicio" class="nav__link">Inicio</a>
-      <a href="#caracteristicas" class="nav__link">Características</a>
-      <a href="#beneficios" class="nav__link">Beneficios</a>
-      <a href="#planes" class="nav__link">Planes</a>
-      <a href="#contacto" class="nav__link">Contacto</a>
+    <nav class="main-nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="#inicio">Inicio</a></li>
+        <li><a href="catalogo.html">Catálogo</a></li>
+        <li><a href="#marcas">Marcas</a></li>
+        <li><a href="#nosotros">Nosotros</a></li>
+        <li><a href="#contacto">Contacto</a></li>
+      </ul>
     </nav>
 
-    <div class="header__actions">
-      <a href="autenticacion.html" class="btn btn--ghost">Iniciar sesión como administrador</a>
-      <a href="#planes" class="btn btn--primary">Comenzar ahora</a>
-      <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú" aria-expanded="false">
+    <div class="header-actions">
+      <a href="catalogo.html" class="btn btn-ghost-navy btn-sm" style="display:none" data-show-desktop>Ver catálogo</a>
+      <a href="autenticacion.html" class="btn btn-primary btn-sm">Iniciar sesión</a>
+      <button class="nav-toggle" aria-label="Abrir menú" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
     </div>
   </div>
 
-  <div class="mobile-nav" id="mobileNav">
-    <a href="#inicio" class="nav__link">Inicio</a>
-    <a href="#caracteristicas" class="nav__link">Características</a>
-    <a href="#beneficios" class="nav__link">Beneficios</a>
-    <a href="#planes" class="nav__link">Planes</a>
-    <a href="#contacto" class="nav__link">Contacto</a>
-    <a href="autenticacion.html" class="btn btn--ghost">Iniciar sesión</a>
-    <a href="#planes" class="btn btn--primary">Comenzar ahora</a>
-  </div>
+  <nav class="mobile-nav" aria-label="Navegación móvil">
+    <ul>
+      <li><a href="#inicio">Inicio</a></li>
+      <li><a href="catalogo.html">Catálogo</a></li>
+      <li><a href="#marcas">Marcas</a></li>
+      <li><a href="#nosotros">Nosotros</a></li>
+      <li><a href="#contacto">Contacto</a></li>
+    </ul>
+    <div class="container">
+      <a href="catalogo.html" class="btn btn-primary btn-block">Ver catálogo</a>
+    </div>
+  </nav>
 </header>
 
 <main>
-  <!-- HERO -->
+
+  <!-- ============ HERO ============ -->
   <section class="hero" id="inicio">
-    <div class="container hero__inner">
-      <div class="hero__content">
-        <span class="eyebrow">Sistema de gestión empresarial en la nube</span>
-        <h1 class="hero__title">Toda tu operación,<br>bajo un solo panel.</h1>
-        <p class="hero__desc">Nexova conecta usuarios, datos y procesos en una plataforma segura y rápida, pensada para empresas que necesitan crecer sin fricción.</p>
-        <div class="hero__actions">
-          <a href="#planes" class="btn btn--primary btn--lg">Comenzar</a>
-          <a href="#caracteristicas" class="btn btn--outline btn--lg">Más información</a>
-        </div>
-        <div class="hero__trust">
-          <span>Cifrado de extremo a extremo</span>
-          <span class="dot" aria-hidden="true"></span>
-          <span>Disponibilidad 99.9%</span>
-        </div>
-      </div>
-
-      <div class="hero__visual" aria-hidden="true">
-        <svg viewBox="0 0 480 420" class="panel-svg">
-          <rect x="20" y="20" width="440" height="380" rx="20" class="panel-bg"/>
-          <circle cx="46" cy="48" r="5" class="dot-red"/>
-          <circle cx="64" cy="48" r="5" class="dot-yellow"/>
-          <circle cx="82" cy="48" r="5" class="dot-green"/>
-
-          <rect x="40" y="80" width="120" height="90" rx="12" class="card-float card-1"/>
-          <text x="52" y="106" class="card-label">Usuarios</text>
-          <text x="52" y="140" class="card-num">1,284</text>
-
-          <rect x="176" y="80" width="120" height="90" rx="12" class="card-float card-2"/>
-          <text x="188" y="106" class="card-label">Seguridad</text>
-          <circle cx="200" cy="140" r="6" class="pulse-dot"/>
-          <text x="216" y="145" class="card-label">Activa</text>
-
-          <rect x="312" y="80" width="128" height="90" rx="12" class="card-float card-3"/>
-          <text x="324" y="106" class="card-label">Respaldo</text>
-          <text x="324" y="140" class="card-num">Hoy</text>
-
-          <rect x="40" y="190" width="400" height="170" rx="14" class="card-chart">
-            <animate attributeName="opacity" values="1" dur="1s"/>
-          </rect>
-          <g class="bars">
-            <rect x="66" y="300" width="26" height="40" rx="4" class="bar bar-1"/>
-            <rect x="106" y="270" width="26" height="70" rx="4" class="bar bar-2"/>
-            <rect x="146" y="240" width="26" height="100" rx="4" class="bar bar-3"/>
-            <rect x="186" y="290" width="26" height="50" rx="4" class="bar bar-4"/>
-            <rect x="226" y="220" width="26" height="120" rx="4" class="bar bar-5"/>
-            <rect x="266" y="260" width="26" height="80" rx="4" class="bar bar-6"/>
-            <rect x="306" y="235" width="26" height="105" rx="4" class="bar bar-7"/>
-            <rect x="346" y="255" width="26" height="85" rx="4" class="bar bar-8"/>
-            <rect x="386" y="215" width="26" height="125" rx="4" class="bar bar-9"/>
-          </g>
-          <text x="66" y="215" class="card-label">Actividad del sistema</text>
-        </svg>
-      </div>
-    </div>
-  </section>
-
-  <!-- BENEFICIOS -->
-  <section class="section" id="beneficios">
     <div class="container">
-      <div class="section__head">
-        <span class="eyebrow">Beneficios</span>
-        <h2>Diseñado para el negocio, no solo para el software.</h2>
-      </div>
-      <div class="grid grid--3">
-        <article class="card-b">
-          <div class="icon-box"><svg viewBox="0 0 24 24"><path d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5z"/></svg></div>
-          <h3>Seguridad</h3>
-          <p>Cifrado y control de accesos en cada capa del sistema.</p>
-        </article>
-        <article class="card-b">
-          <div class="icon-box"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h7l-1 8 11-14h-7l0-6z"/></svg></div>
-          <h3>Rapidez</h3>
-          <p>Respuestas instantáneas incluso con grandes volúmenes de datos.</p>
-        </article>
-        <article class="card-b">
-          <div class="icon-box"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/></svg></div>
-          <h3>Acceso desde cualquier lugar</h3>
-          <p>Disponible en cualquier dispositivo con conexión a internet.</p>
-        </article>
-        <article class="card-b">
-          <div class="icon-box"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/></svg></div>
-          <h3>Respaldo de datos</h3>
-          <p>Copias de seguridad automáticas y recuperación garantizada.</p>
-        </article>
-        <article class="card-b">
-          <div class="icon-box"><svg viewBox="0 0 24 24"><circle cx="8" cy="8" r="3"/><circle cx="16" cy="16" r="3"/><path d="M8 11v2a3 3 0 003 3M16 13v-2a3 3 0 00-3-3"/></svg></div>
-          <h3>Usuarios múltiples</h3>
-          <p>Roles y permisos para equipos de cualquier tamaño.</p>
-        </article>
-        <article class="card-b">
-          <div class="icon-box"><svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8M21 7v6h-6"/></svg></div>
-          <h3>Escalabilidad</h3>
-          <p>Crece con tu empresa sin cambiar de plataforma.</p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- CARACTERISTICAS -->
-  <section class="section section--tint" id="caracteristicas">
-    <div class="container">
-      <div class="section__head">
-        <span class="eyebrow">Características</span>
-        <h2>Todo lo que tu operación necesita, en un solo lugar.</h2>
-      </div>
-      <div class="grid grid--3">
-        <article class="card-f">
-          <h3>Panel centralizado</h3>
-          <p>Visualiza métricas clave y el estado de tu empresa en tiempo real.</p>
-        </article>
-        <article class="card-f">
-          <h3>Gestión de usuarios</h3>
-          <p>Administra roles, permisos y accesos desde un solo módulo.</p>
-        </article>
-        <article class="card-f">
-          <h3>Reportes automáticos</h3>
-          <p>Genera informes de actividad sin procesos manuales.</p>
-        </article>
-        <article class="card-f">
-          <h3>Integraciones</h3>
-          <p>Conecta Nexova con las herramientas que ya utiliza tu equipo.</p>
-        </article>
-        <article class="card-f">
-          <h3>Auditoría de actividad</h3>
-          <p>Historial detallado de cada acción dentro del sistema.</p>
-        </article>
-        <article class="card-f">
-          <h3>Soporte prioritario</h3>
-          <p>Acompañamiento técnico dedicado para tu empresa.</p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- POR QUE ELEGIRNOS -->
-  <section class="section" id="por-que-elegirnos">
-    <div class="container why__inner">
-      <div class="why__text">
-        <span class="eyebrow">¿Por qué elegirnos?</span>
-        <h2>Una base sólida para construir el resto de tu operación.</h2>
-        <p>Nexova no es solo una interfaz: es la infraestructura sobre la que tu empresa opera todos los días.</p>
-      </div>
-      <ul class="why__list">
-        <li><strong>Implementación rápida.</strong> Tu equipo empieza a operar en días, no meses.</li>
-        <li><strong>Arquitectura confiable.</strong> Infraestructura pensada para no fallar en producción.</li>
-        <li><strong>Crecimiento sin límites.</strong> El sistema escala junto a tu empresa.</li>
-        <li><strong>Datos siempre tuyos.</strong> Control total sobre tu información.</li>
-      </ul>
-    </div>
-  </section>
-
-  <!-- ESTADISTICAS -->
-  <section class="section section--dark" id="estadisticas">
-    <div class="container">
-      <div class="grid grid--4 stats">
-        <div class="stat">
-          <span class="stat__num" data-count="1200">0</span>
-          <span class="stat__label">Empresas activas</span>
+      <div class="hero-copy">
+        <span class="eyebrow">Distribuidor industrial certificado</span>
+        <h1 class="hero-title">Protección real para <span class="accent">manos que trabajan</span></h1>
+        <p class="hero-text">
+          Calzado industrial, botas de seguridad y equipo de protección personal (EPP)
+          diseñado para resistir la exigencia de la planta, la obra y el taller.
+          Calidad certificada, entrega rápida y atención especializada.
+        </p>
+        <div class="hero-ctas">
+          <a href="catalogo.html" class="btn btn-primary">Ver catálogo</a>
+          <a href="#" class="btn btn-outline" data-config="whatsapp-link" target="_blank" rel="noopener">Contactar por WhatsApp</a>
         </div>
-        <div class="stat">
-          <span class="stat__num" data-count="99" data-suffix="%">0</span>
-          <span class="stat__label">Disponibilidad</span>
-        </div>
-        <div class="stat">
-          <span class="stat__num" data-count="45000">0</span>
-          <span class="stat__label">Usuarios gestionados</span>
-        </div>
-        <div class="stat">
-          <span class="stat__num" data-count="24" data-suffix="/7">0</span>
-          <span class="stat__label">Soporte disponible</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- PLANES -->
-  <section class="section" id="planes">
-    <div class="container">
-      <div class="section__head">
-        <span class="eyebrow">Planes</span>
-        <h2>Un plan para cada etapa de tu empresa.</h2>
-      </div>
-      <div class="grid grid--3">
-        <article class="plan">
-          <h3>Básico</h3>
-          <p class="plan__price">$29<span>/mes</span></p>
-          <ul class="plan__list">
-            <li>Hasta 5 usuarios</li>
-            <li>1 GB de almacenamiento</li>
-            <li>Soporte por correo</li>
-          </ul>
-          <a href="#contacto" class="btn btn--outline">Elegir plan</a>
-        </article>
-        <article class="plan plan--featured">
-          <span class="plan__badge">Recomendado</span>
-          <h3>Profesional</h3>
-          <p class="plan__price">$79<span>/mes</span></p>
-          <ul class="plan__list">
-            <li>Hasta 25 usuarios</li>
-            <li>20 GB de almacenamiento</li>
-            <li>Soporte prioritario</li>
-            <li>Reportes avanzados</li>
-          </ul>
-          <a href="#contacto" class="btn btn--primary">Elegir plan</a>
-        </article>
-        <article class="plan">
-          <h3>Empresarial</h3>
-          <p class="plan__price">$199<span>/mes</span></p>
-          <ul class="plan__list">
-            <li>Usuarios ilimitados</li>
-            <li>Almacenamiento ilimitado</li>
-            <li>Soporte dedicado 24/7</li>
-          </ul>
-          <a href="#contacto" class="btn btn--outline">Elegir plan</a>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- TESTIMONIOS -->
-  <section class="section section--tint" id="testimonios">
-    <div class="container">
-      <div class="section__head">
-        <span class="eyebrow">Testimonios</span>
-        <h2>Empresas que ya confían en Nexova.</h2>
-      </div>
-      <div class="grid grid--3">
-        <article class="testimonial">
-          <p>“Redujimos el tiempo de gestión administrativa a la mitad desde que implementamos Nexova.”</p>
-          <div class="testimonial__author">
-            <strong>María Fernández</strong>
-            <span>Gerente de Operaciones</span>
+        <div class="hero-stats">
+          <div>
+            <div class="stat-num">+500</div>
+            <div class="stat-label">Productos EPP</div>
           </div>
-        </article>
-        <article class="testimonial">
-          <p>“La seguridad y estabilidad del sistema nos dieron la confianza para migrar toda la empresa.”</p>
-          <div class="testimonial__author">
-            <strong>Carlos Rojas</strong>
-            <span>Director de TI</span>
+          <div>
+            <div class="stat-num">+12</div>
+            <div class="stat-label">Marcas certificadas</div>
           </div>
-        </article>
-        <article class="testimonial">
-          <p>“El soporte y la facilidad de uso hicieron que la adopción fuera inmediata para todo el equipo.”</p>
-          <div class="testimonial__author">
-            <strong>Ana Martínez</strong>
-            <span>Directora General</span>
+          <div>
+            <div class="stat-num">24h</div>
+            <div class="stat-label">Cotización</div>
           </div>
-        </article>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="nameplate-frame">
+          <div class="rivet tl"></div><div class="rivet tr"></div>
+          <div class="rivet bl"></div><div class="rivet br"></div>
+          <div class="nameplate-tab" aria-hidden="true"></div>
+          <svg viewBox="0 0 460 460" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Casco y equipo de protección industrial">
+            <rect width="460" height="460" rx="10" fill="#0F2A4D"/>
+            <circle cx="230" cy="200" r="150" fill="#123a63"/>
+            <path d="M120 240c0-70 50-120 110-120s110 50 110 120H120Z" fill="#F5F6F8"/>
+            <rect x="118" y="238" width="224" height="26" rx="8" fill="#DCE1E6"/>
+            <rect x="205" y="120" width="50" height="20" rx="4" fill="#F2A900"/>
+            <circle cx="230" cy="150" r="6" fill="#8C97A1"/>
+            <g stroke="#8C97A1" stroke-width="3">
+              <path d="M170 130c10-16 34-28 60-28s50 12 60 28" fill="none"/>
+            </g>
+            <rect x="60" y="330" width="340" height="70" rx="12" fill="#0A2342" stroke="#1D4E89" stroke-width="2"/>
+            <rect x="80" y="350" width="80" height="10" rx="5" fill="#F2A900"/>
+            <rect x="80" y="368" width="140" height="8" rx="4" fill="#5C6670"/>
+            <rect x="260" y="350" width="60" height="28" rx="6" fill="#1D4E89"/>
+          </svg>
+        </div>
       </div>
     </div>
   </section>
+
+  <!-- ============ CATEGORÍAS ============ -->
+  <section class="categories" id="categorias">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Líneas de producto</span>
+        <h2 class="section-title">Categorías</h2>
+        <p class="section-desc">Equipo especializado agrupado por tipo de protección, listo para tu operación.</p>
+      </div>
+      <div class="category-grid" data-grid="categorias">
+        <!-- Skeletons mientras carga -->
+        <div class="category-card"><div class="skeleton" style="height:96px;border-radius:12px;"></div></div>
+        <div class="category-card"><div class="skeleton" style="height:96px;border-radius:12px;"></div></div>
+        <div class="category-card"><div class="skeleton" style="height:96px;border-radius:12px;"></div></div>
+        <div class="category-card"><div class="skeleton" style="height:96px;border-radius:12px;"></div></div>
+        <div class="category-card"><div class="skeleton" style="height:96px;border-radius:12px;"></div></div>
+        <div class="category-card"><div class="skeleton" style="height:96px;border-radius:12px;"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PRODUCTOS DESTACADOS ============ -->
+  <section class="products" id="productos">
+    <div class="container">
+      <div class="section-head-row reveal">
+        <div class="section-head">
+          <span class="eyebrow">Selección de la semana</span>
+          <h2 class="section-title">Productos destacados</h2>
+        </div>
+        <a href="catalogo.html" class="btn btn-ghost-navy btn-sm">Ver todo el catálogo</a>
+      </div>
+      <div class="product-grid" data-grid="productos">
+        <div class="product-card"><div class="skeleton" style="aspect-ratio:1/1;"></div></div>
+        <div class="product-card"><div class="skeleton" style="aspect-ratio:1/1;"></div></div>
+        <div class="product-card"><div class="skeleton" style="aspect-ratio:1/1;"></div></div>
+        <div class="product-card"><div class="skeleton" style="aspect-ratio:1/1;"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MARCAS ============ -->
+  <section class="brands" id="marcas">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Respaldo de fábrica</span>
+        <h2 class="section-title">Marcas que distribuimos</h2>
+        <p class="section-desc">Trabajamos con fabricantes reconocidos por sus certificaciones de seguridad industrial.</p>
+      </div>
+    </div>
+    <div class="brand-track-wrap">
+      <div class="brand-track" data-track="marcas">
+        <div class="state-empty" style="color:rgba(255,255,255,0.6); border-color: rgba(255,255,255,0.2);">Cargando marcas…</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ POR QUÉ ELEGIRNOS ============ -->
+  <section class="why" id="nosotros">
+    <div class="container">
+      <div class="section-head center reveal" style="margin-inline:auto;">
+        <span class="eyebrow">Nuestro compromiso</span>
+        <h2 class="section-title">Por qué elegirnos</h2>
+      </div>
+      <div class="why-grid">
+        <div class="why-card reveal">
+          <div class="why-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.4 8.7 8 11 4.6-2.3 8-6 8-11V5l-8-3Z"/><path d="m9 12 2 2 4-4"/></svg>
+          </div>
+          <h3>Productos certificados</h3>
+          <p>Cada equipo cumple normas internacionales de seguridad industrial.</p>
+        </div>
+        <div class="why-card reveal" style="transition-delay:80ms">
+          <div class="why-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="8" r="5"/></svg>
+          </div>
+          <h3>Atención personalizada</h3>
+          <p>Un asesor te acompaña para encontrar el equipo correcto para tu operación.</p>
+        </div>
+        <div class="why-card reveal" style="transition-delay:160ms">
+          <div class="why-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h13v10H3z"/><path d="M16 10h4l2 3v4h-6z"/><circle cx="7.5" cy="19" r="1.6"/><circle cx="17.5" cy="19" r="1.6"/></svg>
+          </div>
+          <h3>Entrega rápida</h3>
+          <p>Logística ágil para que tu equipo no detenga la producción.</p>
+        </div>
+        <div class="why-card reveal" style="transition-delay:240ms">
+          <div class="why-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          </div>
+          <h3>Calidad garantizada</h3>
+          <p>Seleccionamos solo marcas con trayectoria comprobada en la industria.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PROCESO ============ -->
+  <section class="process">
+    <div class="container">
+      <div class="section-head center reveal" style="margin-inline:auto;">
+        <span class="eyebrow">Así de simple</span>
+        <h2 class="section-title">Cómo funciona</h2>
+      </div>
+      <div class="process-grid">
+        <div class="process-step reveal">
+          <div class="process-num">1</div>
+          <h3>Explora el catálogo</h3>
+          <p>Filtra por categoría, marca o tipo de protección.</p>
+        </div>
+        <div class="process-step reveal" style="transition-delay:80ms">
+          <div class="process-num">2</div>
+          <h3>Selecciona productos</h3>
+          <p>Arma tu lista de equipo según tus necesidades.</p>
+        </div>
+        <div class="process-step reveal" style="transition-delay:160ms">
+          <div class="process-num">3</div>
+          <h3>Solicita cotización</h3>
+          <p>Envía tu solicitud sin ningún compromiso.</p>
+        </div>
+        <div class="process-step reveal" style="transition-delay:240ms">
+          <div class="process-num">4</div>
+          <h3>Atención por WhatsApp</h3>
+          <p>Un asesor confirma disponibilidad y tiempos de entrega.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CONTACTO ============ -->
+  <section class="contact" id="contacto">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Hablemos</span>
+        <h2 class="section-title">Contacto</h2>
+        <p class="section-desc">Escríbenos y un asesor te ayudará a encontrar el equipo correcto.</p>
+      </div>
+
+      <div class="contact-grid">
+        <div class="reveal">
+          <div class="contact-list">
+            <div class="contact-item">
+              <span class="contact-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+              </span>
+              <div>
+                <h4>Dirección</h4>
+                <p data-config="direccion">Cargando dirección…</p>
+              </div>
+            </div>
+            <div class="contact-item">
+              <span class="contact-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg>
+              </span>
+              <div>
+                <h4>Correo</h4>
+                <a href="#" data-config="correo">contacto@industrial505.com</a>
+              </div>
+            </div>
+            <div class="contact-item">
+              <span class="contact-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 15.5c-1.2 0-2.4-.2-3.5-.6a1 1 0 0 0-1 .2l-1.6 1.6a14.6 14.6 0 0 1-6.6-6.6l1.6-1.6a1 1 0 0 0 .2-1A11 11 0 0 1 8.5 4a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1c0 9.4 7.6 17 17 17a1 1 0 0 0 1-1v-3.5a1 1 0 0 0-1-1Z"/></svg>
+              </span>
+              <div>
+                <h4>WhatsApp</h4>
+                <a href="#" data-config="whatsapp-link" target="_blank" rel="noopener" data-config-text="whatsapp-text"><span data-config="whatsapp-text">Cargando…</span></a>
+              </div>
+            </div>
+            <div class="contact-item">
+              <span class="contact-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+              </span>
+              <div>
+                <h4>Horario</h4>
+                <p data-config="horario">Cargando horario…</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="reveal" style="transition-delay:120ms">
+          <div class="map-placeholder">
+            <div class="map-inner">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+              <strong>Mapa de ubicación</strong>
+              <p>Aquí se integrará el mapa interactivo con la ubicación de nuestra sucursal.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
 </main>
 
-<!-- FOOTER -->
-<footer class="footer" id="contacto">
-  <div class="container footer__inner">
-    <div class="footer__brand">
-      <span class="brand__name">Nexova</span>
-      <p>Sistema de gestión empresarial en la nube.</p>
-    </div>
+<!-- ============ FOOTER ============ -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <span class="brand-word">INDUSTRIAL<span>505</span></span>
+        <p>Distribución de calzado industrial y equipo de protección personal certificado para tu operación.</p>
+        <div class="footer-social">
+          <a href="#" data-config="facebook" target="_blank" rel="noopener" aria-label="Facebook">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-7.5H16l.5-3H13.5V8.3c0-.9.3-1.5 1.6-1.5H16.5V4.2C16.2 4.1 15.2 4 14 4c-2.4 0-4 1.5-4 4.2V10.5H7.5v3H10V21h3.5Z"/></svg>
+          </a>
+          <a href="#" data-config="instagram" target="_blank" rel="noopener" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17" cy="7" r="1"/></svg>
+          </a>
+          <a href="#" data-config="linkedin" target="_blank" rel="noopener" aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5A2.5 2.5 0 1 0 5 8.5a2.5 2.5 0 0 0-.02-5ZM3 9.75h4V21H3V9.75Zm7 0h3.8v1.53h.05c.53-.94 1.82-1.93 3.75-1.93 4 0 4.75 2.4 4.75 5.5V21h-4v-5.5c0-1.3-.02-3-1.9-3-1.9 0-2.2 1.4-2.2 2.9V21h-4V9.75Z"/></svg>
+          </a>
+        </div>
+      </div>
 
-    <div class="footer__col">
-      <h4>Enlaces rápidos</h4>
-      <a href="#inicio">Inicio</a>
-      <a href="#caracteristicas">Características</a>
-      <a href="#beneficios">Beneficios</a>
-      <a href="#planes">Planes</a>
-    </div>
+      <div class="footer-col">
+        <h4>Enlaces rápidos</h4>
+        <ul>
+          <li><a href="#inicio">Inicio</a></li>
+          <li><a href="catalogo.html">Catálogo</a></li>
+          <li><a href="#marcas">Marcas</a></li>
+          <li><a href="#nosotros">Nosotros</a></li>
+        </ul>
+      </div>
 
-    <div class="footer__col">
-      <h4>Contacto</h4>
-      <a href="mailto:contacto@nexova.com">contacto@nexova.com</a>
-      <a href="tel:+50500000000">+505 0000 0000</a>
-      <span>Managua, Nicaragua</span>
-    </div>
+      <div class="footer-col">
+        <h4>Empresa</h4>
+        <ul>
+          <li><a href="#contacto">Contacto</a></li>
+          <li><a href="autenticacion.html">Iniciar sesión</a></li>
+          <li><a href="#nosotros">Por qué elegirnos</a></li>
+        </ul>
+      </div>
 
-    <div class="footer__col">
-      <h4>Síguenos</h4>
-      <div class="footer__social">
-        <a href="#" aria-label="LinkedIn">in</a>
-        <a href="#" aria-label="X">X</a>
-        <a href="#" aria-label="Instagram">ig</a>
+      <div class="footer-col">
+        <h4>Contacto</h4>
+        <ul>
+          <li><a href="#" data-config="correo">contacto@industrial505.com</a></li>
+          <li><a href="#" data-config="whatsapp-link" target="_blank" rel="noopener">Escribir por WhatsApp</a></li>
+        </ul>
       </div>
     </div>
-  </div>
-  <div class="footer__bottom">
-    <p>&copy; <span id="year"></span> Nexova. Todos los derechos reservados.</p>
+
+    <div class="footer-bottom">
+      <span>© <span id="year"></span> INDUSTRIAL 505. Todos los derechos reservados.</span>
+      <span>Sitio construido con HTML, CSS, JavaScript y Supabase.</span>
+    </div>
   </div>
 </footer>
 
-<script src="script.js"></script>
+<!-- Botón flotante de WhatsApp -->
+<a href="#" class="wa-float" data-config="whatsapp-link" target="_blank" rel="noopener" aria-label="Contactar por WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 15.5c-1.2 0-2.4-.2-3.5-.6a1 1 0 0 0-1 .2l-1.6 1.6a14.6 14.6 0 0 1-6.6-6.6l1.6-1.6a1 1 0 0 0 .2-1A11 11 0 0 1 8.5 4a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1c0 9.4 7.6 17 17 17a1 1 0 0 0 1-1v-3.5a1 1 0 0 0-1-1Z"/></svg>
+</a>
+
+<script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/main.js"></script>
 </body>
 </html>
