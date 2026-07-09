@@ -10,8 +10,8 @@
       configuradas (ver sql_editor.sql), como ya se hizo aquí.
    ========================================================= */
 
-const SUPABASE_URL = "https://TU-PROYECTO.supabase.co";
-const SUPABASE_ANON_KEY = "TU_SUPABASE_ANON_KEY";
+const SUPABASE_URL = "https://jfrnctixhfctagupgits.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_6QqPI-T6nxk4YUAGAdfwdA_xUY0Imxe";
 
 // El cliente se crea usando la librería global `supabase`
 // cargada vía CDN en index.html (window.supabase.createClient)
