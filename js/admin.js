@@ -183,6 +183,69 @@ async function registrarActividad(accion, detalle = "") {
   }
 }
 
+/* ---------------------------------------------------------
+   Subida de archivos a Supabase Storage
+   bucket: "imagenes" o "fichas-tecnicas" (creados en
+   sql_editor_storage.sql). Devuelve la URL pública del archivo.
+--------------------------------------------------------- */
+async function uploadToStorage(file, bucket, folder = "general") {
+  const ext = (file.name.split(".").pop() || "bin").toLowerCase();
+  const randomId = (window.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`);
+  const path = `${folder}/${randomId}.${ext}`;
+
+  const { error } = await window.supabaseClient
+    .storage.from(bucket)
+    .upload(path, file, { upsert: true, cacheControl: "3600" });
+  if (error) throw error;
+
+  const { data } = window.supabaseClient.storage.from(bucket).getPublicUrl(path);
+  return data.publicUrl;
+}
+
+/* ---------------------------------------------------------
+   Helpers para campos de subida "simples" (fuera del modal
+   genérico): Hero, Configuración y Mi Perfil.
+--------------------------------------------------------- */
+function setFilePreview(previewId, url) {
+  const el = document.getElementById(previewId);
+  if (!el) return;
+  if (url) {
+    el.setAttribute("href", url);
+    el.innerHTML = `<img src="${escapeHtml(url)}" alt="" />`;
+  } else {
+    el.setAttribute("href", "#");
+    el.innerHTML = `<span class="file-preview-empty">Sin imagen</span>`;
+  }
+}
+
+function wireFileInputPreview(fileInputId, previewId, filenameId) {
+  const input = document.getElementById(fileInputId);
+  if (!input || input.dataset.bound === "true") return;
+  input.dataset.bound = "true";
+  input.addEventListener("change", () => {
+    const file = input.files?.[0];
+    if (!file) return;
+    const nameEl = document.getElementById(filenameId);
+    if (nameEl) nameEl.textContent = file.name;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const preview = document.getElementById(previewId);
+      if (preview) preview.innerHTML = `<img src="${e.target.result}" alt="" />`;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+async function resolveFileUpload(fileInputId, hiddenInputId, bucket, folder) {
+  const fileInput = document.getElementById(fileInputId);
+  const file = fileInput?.files?.[0];
+  if (file) {
+    const url = await uploadToStorage(file, bucket, folder);
+    document.getElementById(hiddenInputId).value = url;
+  }
+  return document.getElementById(hiddenInputId).value;
+}
+
 /* =========================================================
    DASHBOARD
    ========================================================= */
@@ -265,6 +328,7 @@ function loadInicioModule() {
   loadFooterForm();
 
   document.getElementById("hero-form")?.addEventListener("submit", saveHero);
+  wireFileInputPreview("hero-imagen-file", "hero-imagen-preview", "hero-imagen-filename");
   document.getElementById("contacto-form")?.addEventListener("submit", saveContacto);
   document.getElementById("footer-form")?.addEventListener("submit", saveFooter);
   document.getElementById("add-estadistica-btn")?.addEventListener("click", () => openEstadisticaModal());
@@ -309,6 +373,7 @@ async function loadHeroForm() {
     document.getElementById("hero-subtitulo").value = data.subtitulo || "";
     document.getElementById("hero-descripcion").value = data.descripcion || "";
     document.getElementById("hero-imagen").value = data.imagen_url || "";
+    setFilePreview("hero-imagen-preview", data.imagen_url);
     document.getElementById("hero-texto-boton").value = data.texto_boton || "";
     document.getElementById("hero-url-boton").value = data.url_boton || "";
     document.getElementById("hero-texto-wa").value = data.texto_boton_whatsapp || "";
@@ -323,6 +388,15 @@ async function saveHero(e) {
   e.preventDefault();
   const btn = e.target.querySelector("button[type='submit']");
   setBtnLoading(btn, true);
+
+  try {
+    await resolveFileUpload("hero-imagen-file", "hero-imagen", "imagenes", "hero");
+  } catch (err) {
+    console.error(err);
+    showToast("No se pudo subir la imagen.", "error");
+    setBtnLoading(btn, false);
+    return;
+  }
 
   const id = document.getElementById("hero-id").value;
   const payload = {
@@ -439,7 +513,7 @@ function openCategoriaModal(id) {
     fields: [
       { key: "nombre", label: "Nombre", value: row?.nombre, placeholder: "Cascos" },
       { key: "slug", label: "Slug (URL)", value: row?.slug, placeholder: "cascos" },
-      { key: "imagen_url", label: "URL de imagen", value: row?.imagen_url, placeholder: "https://…" },
+      { key: "imagen_url", label: "Imagen", value: row?.imagen_url, type: "file", accept: "image/*", bucket: "imagenes", folder: "categorias" },
       { key: "orden", label: "Orden", value: row?.orden ?? 0, type: "number" },
     ],
     activo: row?.activo ?? true,
@@ -486,7 +560,7 @@ function openMarcaModal(id) {
     title: id ? "Editar marca" : "Nueva marca",
     fields: [
       { key: "nombre", label: "Nombre", value: row?.nombre, placeholder: "SteelGuard" },
-      { key: "logo_url", label: "URL del logo", value: row?.logo_url, placeholder: "https://…" },
+      { key: "logo_url", label: "Logo", value: row?.logo_url, type: "file", accept: "image/*", bucket: "imagenes", folder: "marcas" },
       { key: "orden", label: "Orden", value: row?.orden ?? 0, type: "number" },
     ],
     activo: row?.activo ?? true,
@@ -701,8 +775,8 @@ async function openProductoModal(id) {
       { key: "precio_descuento", label: "Precio con descuento (opcional)", value: row?.precio_descuento ?? "", type: "number" },
       { key: "stock", label: "Stock", value: row?.stock ?? 0, type: "number" },
       { key: "disponible", label: "Disponibilidad", value: row ? String(row.disponible) : "true", type: "select", options: [{ value: "true", label: "Disponible" }, { value: "false", label: "Agotado" }] },
-      { key: "imagen_url", label: "URL de imagen", value: row?.imagen_url, placeholder: "https://…" },
-      { key: "ficha_tecnica_url", label: "URL de ficha técnica (PDF, opcional)", value: row?.ficha_tecnica_url, placeholder: "https://…" },
+      { key: "imagen_url", label: "Imagen del producto", value: row?.imagen_url, type: "file", accept: "image/*", bucket: "imagenes", folder: "productos" },
+      { key: "ficha_tecnica_url", label: "Ficha técnica (PDF)", value: row?.ficha_tecnica_url, type: "file", accept: "application/pdf", bucket: "fichas-tecnicas", folder: "productos" },
       { key: "orden", label: "Orden", value: row?.orden ?? 0, type: "number" },
       { key: "descripcion", label: "Descripción", value: row?.descripcion, type: "textarea" },
       { key: "especificaciones", label: "Especificaciones técnicas", value: row?.especificaciones, type: "textarea" },
@@ -926,13 +1000,18 @@ async function loadConfiguracionModule() {
   const data = await getConfigMap(["nombre_empresa", "logo_url", "favicon_url", "correo", "whatsapp", "direccion", "color_navy", "color_steel_blue", "color_safety"]);
   document.getElementById("config-nombre").value = data.nombre_empresa || "";
   document.getElementById("config-logo").value = data.logo_url || "";
+  setFilePreview("config-logo-preview", data.logo_url);
   document.getElementById("config-favicon").value = data.favicon_url || "";
+  setFilePreview("config-favicon-preview", data.favicon_url);
   document.getElementById("config-correo").value = data.correo || "";
   document.getElementById("config-whatsapp").value = data.whatsapp || "";
   document.getElementById("config-direccion").value = data.direccion || "";
   document.getElementById("config-color-navy").value = data.color_navy || "#0A2342";
   document.getElementById("config-color-blue").value = data.color_steel_blue || "#1D4E89";
   document.getElementById("config-color-safety").value = data.color_safety || "#F2A900";
+
+  wireFileInputPreview("config-logo-file", "config-logo-preview", "config-logo-filename");
+  wireFileInputPreview("config-favicon-file", "config-favicon-preview", "config-favicon-filename");
 
   if (!configuracionInitialized) {
     configuracionInitialized = true;
@@ -945,6 +1024,9 @@ async function saveConfiguracionModule(e) {
   const btn = e.target.querySelector("button[type='submit']");
   setBtnLoading(btn, true);
   try {
+    await resolveFileUpload("config-logo-file", "config-logo", "imagenes", "marca");
+    await resolveFileUpload("config-favicon-file", "config-favicon", "imagenes", "marca");
+
     await setConfigMap({
       nombre_empresa: document.getElementById("config-nombre").value.trim(),
       logo_url: document.getElementById("config-logo").value.trim(),
@@ -975,6 +1057,8 @@ async function loadPerfilModule() {
   document.getElementById("perfil-correo").value = currentUser?.email || "";
   document.getElementById("perfil-nombre").value = currentProfile?.nombre || "";
   document.getElementById("perfil-avatar").value = currentProfile?.avatar_url || "";
+  setFilePreview("perfil-avatar-preview", currentProfile?.avatar_url);
+  wireFileInputPreview("perfil-avatar-file", "perfil-avatar-preview", "perfil-avatar-filename");
 
   if (!perfilInitialized) {
     perfilInitialized = true;
@@ -988,6 +1072,7 @@ async function savePerfil(e) {
   const btn = e.target.querySelector("button[type='submit']");
   setBtnLoading(btn, true);
   try {
+    await resolveFileUpload("perfil-avatar-file", "perfil-avatar", "imagenes", "perfiles");
     const payload = {
       nombre: document.getElementById("perfil-nombre").value.trim(),
       avatar_url: document.getElementById("perfil-avatar").value.trim(),
@@ -1106,6 +1191,28 @@ function openFormModal({ title, fields, activo, onSave, note, hideActivo, hideSa
     if (f.type === "textarea") {
       return `<div class="form-field full-width"><label>${f.label}</label><textarea class="form-textarea" data-field="${f.key}">${escapeHtml(f.value || "")}</textarea></div>`;
     }
+    if (f.type === "file") {
+      const isPdf = (f.accept || "").includes("pdf");
+      const previewInner = f.value
+        ? (isPdf
+            ? `<span class="file-preview-link">📄 Ver actual</span>`
+            : `<img src="${escapeHtml(f.value)}" alt="" />`)
+        : `<span class="file-preview-empty">${isPdf ? "Sin archivo" : "Sin imagen"}</span>`;
+      return `<div class="form-field full-width">
+        <label>${f.label}</label>
+        <div class="file-upload-row">
+          <a class="file-preview" data-preview="${f.key}" href="${f.value ? escapeHtml(f.value) : "#"}" target="${f.value ? "_blank" : "_self"}" rel="noopener" onclick="${f.value ? "" : "return false;"}">${previewInner}</a>
+          <div class="file-upload-controls">
+            <label class="btn btn-ghost-navy btn-sm file-upload-btn">
+              Elegir archivo
+              <input type="file" data-field-file="${f.key}" data-bucket="${f.bucket || "imagenes"}" data-folder="${f.folder || "general"}" accept="${f.accept || "image/*"}" style="display:none;" />
+            </label>
+            <span class="file-upload-name" data-filename="${f.key}"></span>
+          </div>
+        </div>
+        <input type="hidden" class="form-input" data-field="${f.key}" value="${escapeHtml(f.value || "")}" />
+      </div>`;
+    }
     if (f.type === "select") {
       return `<div class="form-field"><label>${f.label}</label><select class="form-select" data-field="${f.key}">
         ${f.options.map((o) => `<option value="${o.value}" ${o.value === f.value ? "selected" : ""}>${o.label}</option>`).join("")}
@@ -1146,15 +1253,47 @@ function openFormModal({ title, fields, activo, onSave, note, hideActivo, hideSa
   document.getElementById("modal-cancel").addEventListener("click", close);
   overlay.addEventListener("click", (e) => { if (e.target === overlay) close(); }, { once: true });
 
+  // Previsualización en vivo al elegir un archivo (antes de subirlo)
+  box.querySelectorAll("[data-field-file]").forEach((input) => {
+    input.addEventListener("change", () => {
+      const file = input.files?.[0];
+      if (!file) return;
+      const key = input.dataset.fieldFile;
+      const nameSpan = box.querySelector(`[data-filename="${key}"]`);
+      if (nameSpan) nameSpan.textContent = file.name;
+      const preview = box.querySelector(`[data-preview="${key}"]`);
+      if (!preview) return;
+      if (file.type.startsWith("image/")) {
+        const reader = new FileReader();
+        reader.onload = (e) => { preview.innerHTML = `<img src="${e.target.result}" alt="" />`; };
+        reader.readAsDataURL(file);
+      } else {
+        preview.innerHTML = `<span class="file-preview-empty">📄 ${escapeHtml(file.name)}</span>`;
+      }
+    });
+  });
+
   if (!hideSave) {
     document.getElementById("modal-form").addEventListener("submit", async (e) => {
       e.preventDefault();
       const btn = e.target.querySelector("button[type='submit']");
       setBtnLoading(btn, true);
-      const values = {};
-      box.querySelectorAll("[data-field]").forEach((el) => { values[el.dataset.field] = el.value; });
-      values.activo = document.getElementById("modal-activo")?.checked ?? true;
       try {
+        // Sube cualquier archivo nuevo seleccionado antes de guardar
+        for (const f of fields) {
+          if (f.type !== "file") continue;
+          const fileInput = box.querySelector(`[data-field-file="${f.key}"]`);
+          const file = fileInput?.files?.[0];
+          if (!file) continue;
+          const url = await uploadToStorage(file, fileInput.dataset.bucket, fileInput.dataset.folder);
+          const hidden = box.querySelector(`[data-field="${f.key}"]`);
+          if (hidden) hidden.value = url;
+        }
+
+        const values = {};
+        box.querySelectorAll("[data-field]").forEach((el) => { values[el.dataset.field] = el.value; });
+        values.activo = document.getElementById("modal-activo")?.checked ?? true;
+
         await onSave(values);
         showToast("Guardado correctamente.");
         close();
