@@ -43,12 +43,11 @@
         <a href="#catalogo" class="admin-nav-link" data-view="catalogo">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a4 4 0 0 1 8 0v2"/></svg>
           Catálogo
-          <span class="admin-nav-badge">Próx.</span>
         </a>
         <a href="#cotizaciones" class="admin-nav-link" data-view="cotizaciones">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6l3 4v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/><path d="M9 12h6M9 16h4"/></svg>
           Cotizaciones
-          <span class="admin-nav-badge">Próx.</span>
+          <span class="admin-nav-badge" id="cotizaciones-nav-badge" style="display:none;"></span>
         </a>
       </div>
 
@@ -146,6 +145,16 @@
             <div class="num" id="last-update" style="font-size:1.05rem;">—</div>
             <div class="label">Última actualización</div>
           </div>
+          <div class="stat-card">
+            <span class="stat-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a4 4 0 0 1 8 0v2"/></svg></span>
+            <div class="num" id="count-productos">—</div>
+            <div class="label">Productos</div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 3h6l3 4v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/><path d="M9 12h6M9 16h4"/></svg></span>
+            <div class="num" id="count-cotizaciones">—</div>
+            <div class="label">Cotizaciones nuevas</div>
+          </div>
         </div>
 
         <div class="view-head" style="margin-top:var(--space-xl);">
@@ -158,6 +167,10 @@
           <a class="quick-card" href="#inicio">
             <span class="quick-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10"/></svg></span>
             <span><strong>Editar página de inicio</strong><span>Hero, categorías, marcas y más</span></span>
+          </a>
+          <a class="quick-card" href="#catalogo">
+            <span class="quick-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a4 4 0 0 1 8 0v2"/></svg></span>
+            <span><strong>Gestionar catálogo</strong><span>Agregar y editar productos</span></span>
           </a>
           <a class="quick-card" href="#usuarios">
             <span class="quick-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0"/></svg></span>
@@ -344,27 +357,61 @@
         </div>
       </section>
 
-      <!-- ============ CATÁLOGO (Próximamente) ============ -->
+      <!-- ============ CATÁLOGO ============ -->
       <section class="admin-view" id="view-catalogo">
-        <div class="coming-soon">
-          <span class="eyebrow">Módulo en desarrollo</span>
-          <span class="coming-soon-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a4 4 0 0 1 8 0v2"/></svg>
-          </span>
-          <h3>Catálogo</h3>
-          <p>Disponible en una próxima actualización. Aquí podrás crear, editar y organizar todo el catálogo de productos.</p>
+        <div class="view-head">
+          <div>
+            <span class="eyebrow">Productos del catálogo</span>
+            <h2>Catálogo</h2>
+          </div>
+          <button class="btn btn-primary btn-sm" id="add-producto-btn" type="button">+ Agregar producto</button>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div><h3>Todos los productos</h3><p>Estos productos son los que ven tus clientes en catalogo.html.</p></div>
+          </div>
+          <div class="admin-table-wrap">
+            <table class="admin-table" id="tabla-productos">
+              <thead><tr><th>Imagen</th><th>Nombre</th><th>Marca</th><th>Categoría</th><th>Precio</th><th>Estado</th><th></th></tr></thead>
+              <tbody><tr><td colspan="7" class="table-empty">Cargando…</td></tr></tbody>
+            </table>
+          </div>
         </div>
       </section>
 
-      <!-- ============ COTIZACIONES (Próximamente) ============ -->
+      <!-- ============ COTIZACIONES ============ -->
       <section class="admin-view" id="view-cotizaciones">
-        <div class="coming-soon">
-          <span class="eyebrow">Módulo en desarrollo</span>
-          <span class="coming-soon-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6l3 4v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/><path d="M9 12h6M9 16h4"/></svg>
-          </span>
-          <h3>Cotizaciones</h3>
-          <p>Disponible en una próxima actualización. Aquí verás las solicitudes de cotización enviadas por tus clientes.</p>
+        <div class="view-head">
+          <div>
+            <span class="eyebrow">Solicitudes recibidas</span>
+            <h2>Cotizaciones</h2>
+          </div>
+          <div class="filter-select-wrap-admin">
+            <select class="form-select" id="cotizaciones-filter" style="max-width:200px;">
+              <option value="">Todos los estados</option>
+              <option value="nueva">Nuevas</option>
+              <option value="atendida">Atendidas</option>
+              <option value="cerrada">Cerradas</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="panel" style="background:var(--off-white); border-style:dashed;">
+          <p class="text-muted">
+            Estas cotizaciones se crean automáticamente cuando un visitante usa el botón
+            <strong>"Cotizar por WhatsApp"</strong> o el carrito en <strong>catalogo.html</strong>.
+            El mensaje de WhatsApp se envía igual; esto es solo un registro para que le des seguimiento.
+          </p>
+        </div>
+
+        <div class="panel">
+          <div class="admin-table-wrap">
+            <table class="admin-table" id="tabla-cotizaciones">
+              <thead><tr><th>Fecha</th><th>Productos</th><th>Total</th><th>Estado</th><th></th></tr></thead>
+              <tbody><tr><td colspan="5" class="table-empty">Cargando…</td></tr></tbody>
+            </table>
+          </div>
         </div>
       </section>
 
