@@ -218,8 +218,20 @@
               </div>
               <div class="form-field mt-sm"><label for="hero-descripcion">Descripción</label>
                 <textarea class="form-textarea" id="hero-descripcion" placeholder="Calzado industrial y EPP certificado…"></textarea></div>
-              <div class="form-field mt-sm"><label for="hero-imagen">URL de imagen</label>
-                <input class="form-input" id="hero-imagen" placeholder="https://…" />
+              <div class="form-field mt-sm"><label>Imagen del hero</label>
+                <div class="file-field-simple">
+                  <a class="file-preview" id="hero-imagen-preview" href="#" target="_blank" rel="noopener" onclick="return false;">
+                    <span class="file-preview-empty">Sin imagen</span>
+                  </a>
+                  <div class="file-upload-controls">
+                    <label class="btn btn-ghost-navy btn-sm file-upload-btn">
+                      Elegir imagen
+                      <input type="file" id="hero-imagen-file" accept="image/*" style="display:none;" />
+                    </label>
+                    <span class="file-upload-name" id="hero-imagen-filename"></span>
+                  </div>
+                  <input type="hidden" id="hero-imagen" />
+                </div>
                 <p class="hint">Déjalo vacío para conservar la ilustración por defecto del sitio.</p></div>
               <div class="form-grid cols-2 mt-sm">
                 <div class="form-field"><label for="hero-texto-boton">Texto botón principal</label>
@@ -459,10 +471,26 @@
                 <input class="form-input" id="config-nombre" /></div>
               <div class="form-field"><label for="config-correo">Correo principal</label>
                 <input class="form-input" type="email" id="config-correo" /></div>
-              <div class="form-field"><label for="config-logo">URL del logo</label>
-                <input class="form-input" id="config-logo" placeholder="https://…" /></div>
-              <div class="form-field"><label for="config-favicon">URL del favicon</label>
-                <input class="form-input" id="config-favicon" placeholder="https://…" /></div>
+              <div class="form-field"><label>Logo</label>
+                <div class="file-field-simple">
+                  <a class="file-preview" id="config-logo-preview" href="#" target="_blank" rel="noopener" onclick="return false;"><span class="file-preview-empty">Sin logo</span></a>
+                  <div class="file-upload-controls">
+                    <label class="btn btn-ghost-navy btn-sm file-upload-btn">Elegir imagen<input type="file" id="config-logo-file" accept="image/*" style="display:none;" /></label>
+                    <span class="file-upload-name" id="config-logo-filename"></span>
+                  </div>
+                  <input type="hidden" id="config-logo" />
+                </div>
+              </div>
+              <div class="form-field"><label>Favicon</label>
+                <div class="file-field-simple">
+                  <a class="file-preview" id="config-favicon-preview" href="#" target="_blank" rel="noopener" onclick="return false;"><span class="file-preview-empty">Sin favicon</span></a>
+                  <div class="file-upload-controls">
+                    <label class="btn btn-ghost-navy btn-sm file-upload-btn">Elegir imagen<input type="file" id="config-favicon-file" accept="image/*" style="display:none;" /></label>
+                    <span class="file-upload-name" id="config-favicon-filename"></span>
+                  </div>
+                  <input type="hidden" id="config-favicon" />
+                </div>
+              </div>
               <div class="form-field"><label for="config-whatsapp">WhatsApp</label>
                 <input class="form-input" id="config-whatsapp" placeholder="50588888888" /></div>
               <div class="form-field"><label for="config-direccion">Dirección</label>
@@ -507,8 +535,16 @@
               <div class="form-field"><label for="perfil-correo">Correo</label>
                 <input class="form-input" id="perfil-correo" disabled /></div>
             </div>
-            <div class="form-field mt-sm"><label for="perfil-avatar">URL de fotografía</label>
-              <input class="form-input" id="perfil-avatar" placeholder="https://…" /></div>
+            <div class="form-field mt-sm"><label>Fotografía</label>
+              <div class="file-field-simple">
+                <a class="file-preview" id="perfil-avatar-preview" href="#" target="_blank" rel="noopener" onclick="return false;" style="width:64px;height:64px;border-radius:50%;"><span class="file-preview-empty">Sin foto</span></a>
+                <div class="file-upload-controls">
+                  <label class="btn btn-ghost-navy btn-sm file-upload-btn">Elegir foto<input type="file" id="perfil-avatar-file" accept="image/*" style="display:none;" /></label>
+                  <span class="file-upload-name" id="perfil-avatar-filename"></span>
+                </div>
+                <input type="hidden" id="perfil-avatar" />
+              </div>
+            </div>
             <div class="form-actions">
               <button type="submit" class="btn btn-primary"><span class="btn-loading-dot"></span><span class="btn-label">Guardar cambios</span></button>
             </div>
