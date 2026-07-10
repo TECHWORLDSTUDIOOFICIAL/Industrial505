@@ -560,6 +560,70 @@ body.admin-body {
 .btn.is-loading { pointer-events: none; }
 @keyframes spin-admin { to { transform: rotate(360deg); } }
 
+/* ---------- Campos de subida de archivos ---------- */
+.file-upload-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.file-preview {
+  width: 64px; height: 64px;
+  border-radius: var(--radius-sm);
+  background: var(--fog);
+  border: 1.5px solid var(--fog);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.file-preview img { width: 100%; height: 100%; object-fit: cover; }
+.file-preview-empty { font-size: 0.68rem; color: var(--steel-gray-light); text-align: center; padding: 4px; }
+.file-preview-link {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--steel-blue);
+  text-align: center;
+  padding: 4px;
+}
+
+.file-upload-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.file-upload-btn {
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.file-upload-name {
+  font-size: 0.76rem;
+  color: var(--steel-gray);
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file-upload-progress {
+  font-size: 0.76rem;
+  color: var(--steel-blue);
+  font-weight: 600;
+}
+
+/* Campo de imagen simple usado en formularios estáticos (Hero, Configuración, Perfil) */
+.file-field-simple {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
 /* ---------- Utilidad ---------- */
 .text-muted { color: var(--steel-gray); }
 .mt-sm { margin-top: var(--space-sm); }
