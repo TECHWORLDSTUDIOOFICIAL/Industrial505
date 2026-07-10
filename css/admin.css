@@ -341,6 +341,7 @@ body.admin-body {
   gap: var(--space-sm) var(--space-md);
 }
 @media (min-width: 720px) { .form-grid.cols-2 { grid-template-columns: 1fr 1fr; } }
+.form-grid.cols-2 .form-field.full-width { grid-column: 1 / -1; }
 
 .form-field label {
   display: block;
@@ -511,7 +512,7 @@ body.admin-body {
 }
 .modal-overlay.is-visible { opacity: 1; visibility: visible; }
 .modal-overlay #modal-box {
-  max-width: 520px;
+  max-width: 620px;
   width: 100%;
   max-height: 88vh;
   overflow-y: auto;
