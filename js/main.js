@@ -8,9 +8,12 @@ document.addEventListener("DOMContentLoaded", () => {
   initMobileNav();
   initRevealOnScroll();
   loadConfiguracion();
+  loadHeroContenido();
+  loadHeroEstadisticas();
   loadCategorias();
   loadProductosDestacados();
   loadMarcas();
+  loadBeneficios();
 });
 
 /* ---------------------------------------------------------
@@ -311,4 +314,138 @@ async function loadMarcas() {
 --------------------------------------------------------- */
 function renderEmptyState(container, message) {
   container.innerHTML = `<div class="state-empty">${escapeHtml(message)}</div>`;
+}
+
+/* ---------------------------------------------------------
+   Hero (título, subtítulo, descripción, imagen, botones)
+   Editable desde admin.html > Página de Inicio > Hero.
+   Si no hay datos en Supabase, se conserva el contenido
+   original tal cual está escrito en el HTML.
+--------------------------------------------------------- */
+async function loadHeroContenido() {
+  if (!window.supabaseClient) return;
+
+  try {
+    const { data, error } = await supabaseClient
+      .from("banners")
+      .select("*")
+      .eq("activo", true)
+      .order("orden", { ascending: true })
+      .limit(1)
+      .maybeSingle();
+    if (error) throw error;
+    if (!data) return; // no hay banner activo: se deja el contenido original
+
+    if (data.subtitulo) {
+      document.getElementById("hero-eyebrow").textContent = data.subtitulo;
+    }
+    if (data.titulo) {
+      // Al editar el título desde el panel se pierde el resaltado de color
+      // (solo aplica al texto por defecto), pero el resto del diseño no cambia.
+      document.getElementById("hero-title").textContent = data.titulo;
+    }
+    if (data.descripcion) {
+      document.getElementById("hero-description").textContent = data.descripcion;
+    }
+    if (data.texto_boton) {
+      document.getElementById("hero-btn-main").textContent = data.texto_boton;
+    }
+    if (data.url_boton) {
+      document.getElementById("hero-btn-main").setAttribute("href", data.url_boton);
+    }
+    if (data.texto_boton_whatsapp) {
+      document.getElementById("hero-btn-wa").textContent = data.texto_boton_whatsapp;
+    }
+    if (data.url_boton_whatsapp) {
+      // Si el admin definió un link propio de WhatsApp para el hero,
+      // este tiene prioridad sobre el general de "configuracion".
+      document.getElementById("hero-btn-wa").setAttribute("href", data.url_boton_whatsapp);
+    }
+    if (data.imagen_url) {
+      const media = document.getElementById("hero-visual-media");
+      const img = document.createElement("img");
+      img.src = data.imagen_url;
+      img.alt = data.titulo || "INDUSTRIAL 505";
+      img.loading = "lazy";
+      media.querySelector("svg")?.replaceWith(img);
+    }
+  } catch (err) {
+    console.error("Error cargando el hero:", err);
+    // En caso de error se conserva el contenido original del HTML.
+  }
+}
+
+/* ---------------------------------------------------------
+   Estadísticas del hero ("+500 Productos EPP", etc.)
+   Editable desde admin.html > Página de Inicio > Estadísticas.
+--------------------------------------------------------- */
+async function loadHeroEstadisticas() {
+  const list = document.getElementById("hero-stats-list");
+  if (!list || !window.supabaseClient) return;
+
+  try {
+    const { data, error } = await supabaseClient
+      .from("hero_estadisticas")
+      .select("*")
+      .eq("activo", true)
+      .order("orden", { ascending: true });
+    if (error) throw error;
+    if (!data || data.length === 0) return; // se conservan las 3 estadísticas originales
+
+    list.innerHTML = data
+      .map(
+        (r) => `
+      <div>
+        <div class="stat-num">${escapeHtml(r.cantidad)}</div>
+        <div class="stat-label">${escapeHtml(r.texto)}</div>
+      </div>`
+      )
+      .join("");
+  } catch (err) {
+    console.error("Error cargando estadísticas del hero:", err);
+  }
+}
+
+/* ---------------------------------------------------------
+   Beneficios ("Por qué elegirnos")
+   Editable desde admin.html > Página de Inicio > Beneficios.
+--------------------------------------------------------- */
+const beneficioIcons = {
+  certificado: `<path d="M12 2 4 5v6c0 5 3.4 8.7 8 11 4.6-2.3 8-6 8-11V5l-8-3Z"/><path d="m9 12 2 2 4-4"/>`,
+  atencion: `<path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="8" r="5"/>`,
+  entrega: `<path d="M3 7h13v10H3z"/><path d="M16 10h4l2 3v4h-6z"/><circle cx="7.5" cy="19" r="1.6"/><circle cx="17.5" cy="19" r="1.6"/>`,
+  calidad: `<path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>`,
+  escudo: `<path d="M12 2 4 5v6c0 5 3.4 8.7 8 11 4.6-2.3 8-6 8-11V5l-8-3Z"/>`,
+};
+
+async function loadBeneficios() {
+  const grid = document.getElementById("why-grid-list");
+  if (!grid || !window.supabaseClient) return;
+
+  try {
+    const { data, error } = await supabaseClient
+      .from("beneficios")
+      .select("*")
+      .eq("activo", true)
+      .order("orden", { ascending: true });
+    if (error) throw error;
+    if (!data || data.length === 0) return; // se conservan las 4 tarjetas originales
+
+    grid.innerHTML = data
+      .map((r, i) => {
+        const icon = beneficioIcons[r.icono] || beneficioIcons.escudo;
+        return `
+        <div class="why-card reveal" style="transition-delay:${i * 80}ms">
+          <div class="why-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${icon}</svg>
+          </div>
+          <h3>${escapeHtml(r.titulo)}</h3>
+          <p>${escapeHtml(r.descripcion || "")}</p>
+        </div>`;
+      })
+      .join("");
+    markObserved(grid);
+  } catch (err) {
+    console.error("Error cargando beneficios:", err);
+  }
 }
