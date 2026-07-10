@@ -108,6 +108,8 @@ function renderRoute() {
   // Carga perezosa según la vista
   if (view === "dashboard") loadDashboard();
   if (view === "inicio") loadInicioModule();
+  if (view === "catalogo") loadCatalogoModule();
+  if (view === "cotizaciones") loadCotizacionesModule();
   if (view === "usuarios") loadUsuarios();
   if (view === "configuracion") loadConfiguracionModule();
   if (view === "perfil") loadPerfilModule();
@@ -190,6 +192,7 @@ async function loadDashboard() {
     { table: "marcas",                el: "count-marcas" },
     { table: "categorias",            el: "count-categorias" },
     { table: "banners",               el: "count-banners" },
+    { table: "productos",             el: "count-productos" },
   ];
 
   for (const c of counters) {
@@ -204,6 +207,18 @@ async function loadDashboard() {
     }
   }
 
+  try {
+    const { count, error } = await window.supabaseClient
+      .from("cotizaciones")
+      .select("*", { count: "exact", head: true })
+      .eq("estado", "nueva");
+    if (error) throw error;
+    document.getElementById("count-cotizaciones").textContent = count ?? 0;
+    updateCotizacionesBadge(count ?? 0);
+  } catch (err) {
+    document.getElementById("count-cotizaciones").textContent = "—";
+  }
+
   document.getElementById("system-status").textContent = window.supabaseClient ? "Operativo" : "Sin conexión";
 
   try {
@@ -215,6 +230,17 @@ async function loadDashboard() {
     document.getElementById("last-update").textContent = data?.valor || new Date().toLocaleDateString("es-NI");
   } catch {
     document.getElementById("last-update").textContent = new Date().toLocaleDateString("es-NI");
+  }
+}
+
+function updateCotizacionesBadge(count) {
+  const badge = document.getElementById("cotizaciones-nav-badge");
+  if (!badge) return;
+  if (count > 0) {
+    badge.textContent = count;
+    badge.style.display = "inline-flex";
+  } else {
+    badge.style.display = "none";
   }
 }
 
@@ -589,6 +615,246 @@ async function saveFooter(e) {
 }
 
 /* =========================================================
+   MÓDULO: CATÁLOGO (productos)
+   ========================================================= */
+let catalogoInitialized = false;
+
+function loadCatalogoModule() {
+  loadProductosList();
+  if (!catalogoInitialized) {
+    catalogoInitialized = true;
+    document.getElementById("add-producto-btn")?.addEventListener("click", () => openProductoModal());
+  }
+}
+
+async function loadProductosList() {
+  const tbody = document.querySelector("#tabla-productos tbody");
+  if (!tbody) return;
+  try {
+    const { data, error } = await window.supabaseClient
+      .from("productos")
+      .select("*, marcas(nombre), categorias(nombre)")
+      .order("orden", { ascending: true });
+    if (error) throw error;
+    cacheRows("productos", data || []);
+
+    if (!data?.length) {
+      tbody.innerHTML = `<tr><td colspan="7" class="table-empty">El catálogo aún no tiene productos. Agrega el primero.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = data.map((p) => {
+      const disponible = p.disponible;
+      return `
+      <tr>
+        <td>${thumb(p.imagen_url)}</td>
+        <td><strong>${escapeHtml(p.nombre)}</strong>${p.sku ? `<br><span class="text-muted">SKU: ${escapeHtml(p.sku)}</span>` : ""}</td>
+        <td>${escapeHtml(p.marcas?.nombre || "—")}</td>
+        <td>${escapeHtml(p.categorias?.nombre || "—")}</td>
+        <td>${formatMoney(p.precio_descuento || p.precio)}${p.precio_descuento ? `<br><span class="text-muted" style="text-decoration:line-through;">${formatMoney(p.precio)}</span>` : ""}</td>
+        <td>
+          <span class="badge ${disponible ? "on" : "off"}">${disponible ? "Disponible" : "Agotado"}</span><br>
+          ${badge(p.activo)}
+        </td>
+        <td class="row-actions">
+          ${editBtn(`openProductoModal('${p.id}')`)}
+          ${deleteBtn(`deleteRow('productos','${p.id}', loadProductosList)`)}
+        </td>
+      </tr>`;
+    }).join("");
+  } catch (err) {
+    console.error(err);
+    tbody.innerHTML = `<tr><td colspan="7" class="table-empty">No se pudo cargar el catálogo.</td></tr>`;
+  }
+}
+
+function formatMoney(value) {
+  if (value === null || value === undefined) return "—";
+  return "C$ " + new Intl.NumberFormat("es-NI", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value);
+}
+
+async function openProductoModal(id) {
+  const row = id ? findCached("productos", id) : null;
+
+  let marcas = [];
+  let categorias = [];
+  try {
+    const [marcasRes, categoriasRes] = await Promise.all([
+      window.supabaseClient.from("marcas").select("id, nombre").order("nombre", { ascending: true }),
+      window.supabaseClient.from("categorias").select("id, nombre").order("nombre", { ascending: true }),
+    ]);
+    marcas = marcasRes.data || [];
+    categorias = categoriasRes.data || [];
+  } catch (err) {
+    console.error("Error cargando marcas/categorías para el formulario:", err);
+  }
+
+  openFormModal({
+    title: id ? "Editar producto" : "Nuevo producto",
+    note: !marcas.length ? "Aún no tienes marcas registradas. Puedes crear el producto igual y asignarle marca luego." : null,
+    fields: [
+      { key: "nombre", label: "Nombre", value: row?.nombre, placeholder: "Bota de seguridad punta de acero" },
+      { key: "sku", label: "SKU (opcional)", value: row?.sku, placeholder: "BT-001" },
+      { key: "marca_id", label: "Marca", value: row?.marca_id, type: "select", options: [{ value: "", label: "Sin marca" }, ...marcas.map((m) => ({ value: m.id, label: m.nombre }))] },
+      { key: "categoria_id", label: "Categoría", value: row?.categoria_id, type: "select", options: [{ value: "", label: "Sin categoría" }, ...categorias.map((c) => ({ value: c.id, label: c.nombre }))] },
+      { key: "precio", label: "Precio (C$)", value: row?.precio ?? 0, type: "number" },
+      { key: "precio_descuento", label: "Precio con descuento (opcional)", value: row?.precio_descuento ?? "", type: "number" },
+      { key: "stock", label: "Stock", value: row?.stock ?? 0, type: "number" },
+      { key: "disponible", label: "Disponibilidad", value: row ? String(row.disponible) : "true", type: "select", options: [{ value: "true", label: "Disponible" }, { value: "false", label: "Agotado" }] },
+      { key: "imagen_url", label: "URL de imagen", value: row?.imagen_url, placeholder: "https://…" },
+      { key: "ficha_tecnica_url", label: "URL de ficha técnica (PDF, opcional)", value: row?.ficha_tecnica_url, placeholder: "https://…" },
+      { key: "orden", label: "Orden", value: row?.orden ?? 0, type: "number" },
+      { key: "descripcion", label: "Descripción", value: row?.descripcion, type: "textarea" },
+      { key: "especificaciones", label: "Especificaciones técnicas", value: row?.especificaciones, type: "textarea" },
+    ],
+    activo: row?.activo ?? true,
+    onSave: async (values) => {
+      const payload = {
+        nombre: values.nombre,
+        sku: values.sku || null,
+        marca_id: values.marca_id || null,
+        categoria_id: values.categoria_id || null,
+        precio: Number(values.precio) || 0,
+        precio_descuento: values.precio_descuento ? Number(values.precio_descuento) : null,
+        stock: Number(values.stock) || 0,
+        disponible: values.disponible === "true",
+        imagen_url: values.imagen_url || null,
+        ficha_tecnica_url: values.ficha_tecnica_url || null,
+        orden: Number(values.orden) || 0,
+        descripcion: values.descripcion || null,
+        especificaciones: values.especificaciones || null,
+        activo: values.activo,
+      };
+      if (id) await window.supabaseClient.from("productos").update(payload).eq("id", id);
+      else await window.supabaseClient.from("productos").insert(payload);
+      registrarActividad(id ? "Editar producto" : "Crear producto", values.nombre);
+      loadProductosList();
+    },
+  });
+}
+
+/* =========================================================
+   MÓDULO: COTIZACIONES
+   ========================================================= */
+let cotizacionesFilterBound = false;
+
+async function loadCotizacionesModule() {
+  await loadCotizacionesList();
+  const filterSelect = document.getElementById("cotizaciones-filter");
+  if (filterSelect && !cotizacionesFilterBound) {
+    cotizacionesFilterBound = true;
+    filterSelect.addEventListener("change", loadCotizacionesList);
+  }
+}
+
+async function loadCotizacionesList() {
+  const tbody = document.querySelector("#tabla-cotizaciones tbody");
+  if (!tbody) return;
+  const filterValue = document.getElementById("cotizaciones-filter")?.value || "";
+
+  try {
+    let query = window.supabaseClient.from("cotizaciones").select("*").order("created_at", { ascending: false });
+    if (filterValue) query = query.eq("estado", filterValue);
+    const { data, error } = await query;
+    if (error) throw error;
+    cacheRows("cotizaciones", data || []);
+
+    if (!data?.length) {
+      tbody.innerHTML = `<tr><td colspan="5" class="table-empty">Aún no hay cotizaciones registradas.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = data.map((c) => {
+      const items = Array.isArray(c.items) ? c.items : [];
+      const resumen = items.length
+        ? `${escapeHtml(items[0].nombre)}${items.length > 1 ? ` y ${items.length - 1} más` : ""}`
+        : "—";
+      const fecha = new Date(c.created_at).toLocaleDateString("es-NI", { day: "2-digit", month: "short", year: "numeric" });
+      return `
+      <tr>
+        <td>${fecha}</td>
+        <td>${resumen}</td>
+        <td>${formatMoney(c.total)}</td>
+        <td>
+          <select class="form-select" style="padding:0.35rem 1.8rem 0.35rem 0.6rem; font-size:0.78rem;" data-estado-select="${c.id}">
+            <option value="nueva" ${c.estado === "nueva" ? "selected" : ""}>Nueva</option>
+            <option value="atendida" ${c.estado === "atendida" ? "selected" : ""}>Atendida</option>
+            <option value="cerrada" ${c.estado === "cerrada" ? "selected" : ""}>Cerrada</option>
+          </select>
+        </td>
+        <td class="row-actions">
+          ${viewBtn(`openCotizacionModal('${c.id}')`)}
+          ${deleteBtn(`deleteRow('cotizaciones','${c.id}', loadCotizacionesList)`)}
+        </td>
+      </tr>`;
+    }).join("");
+
+    tbody.querySelectorAll("[data-estado-select]").forEach((select) => {
+      select.addEventListener("change", async () => {
+        try {
+          const { error } = await window.supabaseClient
+            .from("cotizaciones")
+            .update({ estado: select.value })
+            .eq("id", select.dataset.estadoSelect);
+          if (error) throw error;
+          showToast("Estado actualizado.");
+          registrarActividad("Actualizar estado de cotización", select.value);
+          loadDashboard();
+        } catch (err) {
+          console.error(err);
+          showToast("No se pudo actualizar el estado.", "error");
+        }
+      });
+    });
+  } catch (err) {
+    console.error(err);
+    tbody.innerHTML = `<tr><td colspan="5" class="table-empty">No se pudieron cargar las cotizaciones.</td></tr>`;
+  }
+}
+
+function openCotizacionModal(id) {
+  const row = findCached("cotizaciones", id);
+  if (!row) return;
+  const items = Array.isArray(row.items) ? row.items : [];
+  const overlay = document.getElementById("modal-overlay");
+  const box = document.getElementById("modal-box");
+
+  box.innerHTML = `
+    <div class="panel-head">
+      <h3>Detalle de cotización</h3>
+      <button type="button" class="icon-btn" id="modal-close" aria-label="Cerrar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <p class="text-muted mt-sm">Recibida el ${new Date(row.created_at).toLocaleString("es-NI")}</p>
+    <div class="admin-table-wrap mt-sm">
+      <table class="admin-table">
+        <thead><tr><th>Producto</th><th>Cant.</th><th>Precio</th><th>Subtotal</th></tr></thead>
+        <tbody>
+          ${items.map((i) => `<tr><td>${escapeHtml(i.nombre)}</td><td>${i.qty}</td><td>${formatMoney(i.precio)}</td><td>${formatMoney(i.precio * i.qty)}</td></tr>`).join("") || `<tr><td colspan="4" class="table-empty">Sin productos</td></tr>`}
+        </tbody>
+      </table>
+    </div>
+    <div class="form-actions" style="justify-content:space-between;">
+      <strong style="font-family:var(--font-display); color:var(--navy); font-size:1.1rem;">Total: ${formatMoney(row.total)}</strong>
+      <button type="button" class="btn btn-ghost-navy" id="modal-cancel">Cerrar</button>
+    </div>
+  `;
+
+  overlay.classList.add("is-visible");
+  const close = () => overlay.classList.remove("is-visible");
+  document.getElementById("modal-close").addEventListener("click", close);
+  document.getElementById("modal-cancel").addEventListener("click", close);
+  overlay.addEventListener("click", (e) => { if (e.target === overlay) close(); }, { once: true });
+}
+
+function viewBtn(onclick) {
+  return `<button class="icon-btn" onclick="${onclick}" aria-label="Ver detalle" type="button">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 12S5 5 12 5s10.5 7 10.5 7-3.5 7-10.5 7S1.5 12 1.5 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+  </button>`;
+}
+
+/* =========================================================
    MÓDULO: USUARIOS
    ========================================================= */
 async function loadUsuarios() {
@@ -828,6 +1094,8 @@ window.openCategoriaModal = openCategoriaModal;
 window.openMarcaModal = openMarcaModal;
 window.openBeneficioModal = openBeneficioModal;
 window.openUsuarioModal = openUsuarioModal;
+window.openProductoModal = openProductoModal;
+window.openCotizacionModal = openCotizacionModal;
 
 /* ---------- Modal genérico de creación/edición ---------- */
 function openFormModal({ title, fields, activo, onSave, note, hideActivo, hideSave }) {
@@ -836,7 +1104,7 @@ function openFormModal({ title, fields, activo, onSave, note, hideActivo, hideSa
 
   const fieldsHtml = fields.map((f) => {
     if (f.type === "textarea") {
-      return `<div class="form-field"><label>${f.label}</label><textarea class="form-textarea" data-field="${f.key}">${escapeHtml(f.value || "")}</textarea></div>`;
+      return `<div class="form-field full-width"><label>${f.label}</label><textarea class="form-textarea" data-field="${f.key}">${escapeHtml(f.value || "")}</textarea></div>`;
     }
     if (f.type === "select") {
       return `<div class="form-field"><label>${f.label}</label><select class="form-select" data-field="${f.key}">
@@ -855,7 +1123,7 @@ function openFormModal({ title, fields, activo, onSave, note, hideActivo, hideSa
     </div>
     ${note ? `<p class="text-muted mt-sm" style="margin-bottom:var(--space-md)">${note}</p>` : ""}
     <form id="modal-form">
-      <div class="form-grid">${fieldsHtml}</div>
+      <div class="form-grid cols-2">${fieldsHtml}</div>
       ${!hideActivo ? `
       <div class="form-switch-row mt-sm">
         <span class="switch">
