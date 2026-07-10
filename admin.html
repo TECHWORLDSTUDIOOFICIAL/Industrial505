@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Panel administrativo | INDUSTRIAL 505</title>
+<meta name="robots" content="noindex, nofollow" />
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="css/styles.css" />
+<link rel="stylesheet" href="css/admin.css" />
+</head>
+<body class="admin-body">
+
+<div class="sidebar-overlay"></div>
+
+<div class="admin-shell">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="admin-sidebar">
+    <div class="admin-sidebar-brand">
+      <svg width="34" height="34" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect x="4" y="4" width="40" height="40" rx="8" fill="#0A2342"/>
+        <path d="M24 10 34 14v8c0 8-4.3 13.5-10 17-5.7-3.5-10-9-10-17v-8l10-4Z" fill="#F5F6F8"/>
+        <path d="M24 10 34 14v8c0 8-4.3 13.5-10 17V10Z" fill="#F2A900"/>
+      </svg>
+      <span>
+        <span class="brand-word">INDUSTRIAL<span>505</span></span>
+        <span class="brand-tag">Panel administrativo</span>
+      </span>
+    </div>
+
+    <nav class="admin-nav">
+      <div class="admin-nav-group">
+        <div class="admin-nav-label">General</div>
+        <a href="#dashboard" class="admin-nav-link" data-view="dashboard">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+          Dashboard
+        </a>
+        <a href="#inicio" class="admin-nav-link" data-view="inicio">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+          Página de Inicio
+        </a>
+        <a href="#catalogo" class="admin-nav-link" data-view="catalogo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a4 4 0 0 1 8 0v2"/></svg>
+          Catálogo
+          <span class="admin-nav-badge">Próx.</span>
+        </a>
+        <a href="#cotizaciones" class="admin-nav-link" data-view="cotizaciones">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6l3 4v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/><path d="M9 12h6M9 16h4"/></svg>
+          Cotizaciones
+          <span class="admin-nav-badge">Próx.</span>
+        </a>
+      </div>
+
+      <div class="admin-nav-group">
+        <div class="admin-nav-label">Administración</div>
+        <a href="#usuarios" class="admin-nav-link" data-view="usuarios">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0"/><path d="M16.5 8.5a3 3 0 1 1 3.2 3M20 20a5 5 0 0 0-3.5-4.8"/></svg>
+          Usuarios
+        </a>
+        <a href="#configuracion" class="admin-nav-link" data-view="configuracion">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.2a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.2a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.2a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.2a1.6 1.6 0 0 0-1.5 1Z"/></svg>
+          Configuración
+        </a>
+        <a href="#perfil" class="admin-nav-link" data-view="perfil">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+          Mi Perfil
+        </a>
+      </div>
+    </nav>
+
+    <div class="admin-sidebar-foot">
+      <button class="admin-logout-btn" data-action="logout" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+        Cerrar sesión
+      </button>
+    </div>
+  </aside>
+
+  <!-- ============ CONTENIDO PRINCIPAL ============ -->
+  <div class="admin-main">
+
+    <!-- Header -->
+    <header class="admin-header">
+      <button class="sidebar-toggle" aria-label="Abrir menú">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
+      </button>
+
+      <div class="admin-header-title">
+        <h1 id="admin-header-title-text">Dashboard</h1>
+        <p id="admin-header-title-desc">Resumen general del sitio.</p>
+      </div>
+
+      <div class="admin-header-user">
+        <div class="admin-user-info">
+          <div class="name" id="admin-user-email">Cargando…</div>
+          <div class="date" id="admin-user-date"></div>
+        </div>
+        <div class="admin-avatar" id="admin-avatar"><span id="admin-avatar-initial">A</span></div>
+        <button class="admin-header-logout" data-action="logout" aria-label="Cerrar sesión" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Contenido -->
+    <main class="admin-content">
+
+      <!-- ============ DASHBOARD ============ -->
+      <section class="admin-view is-active" id="view-dashboard">
+        <div class="view-head">
+          <div>
+            <span class="eyebrow">Resumen</span>
+            <h2>Dashboard</h2>
+          </div>
+        </div>
+
+        <div class="stat-grid">
+          <div class="stat-card">
+            <span class="stat-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0"/></svg></span>
+            <div class="num" id="count-usuarios">—</div>
+            <div class="label">Usuarios registrados</div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="M2 17l10 5 10-5"/></svg></span>
+            <div class="num" id="count-marcas">—</div>
+            <div class="label">Marcas</div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2 4 5v6c0 5 3.4 8.7 8 11 4.6-2.3 8-6 8-11V5l-8-3Z"/></svg></span>
+            <div class="num" id="count-categorias">—</div>
+            <div class="label">Categorías</div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg></span>
+            <div class="num" id="count-banners">—</div>
+            <div class="label">Banners</div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="m9 12 2 2 4-4"/></svg></span>
+            <div class="num" id="system-status">—</div>
+            <div class="label">Estado del sistema</div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></span>
+            <div class="num" id="last-update" style="font-size:1.05rem;">—</div>
+            <div class="label">Última actualización</div>
+          </div>
+        </div>
+
+        <div class="view-head" style="margin-top:var(--space-xl);">
+          <div>
+            <span class="eyebrow">Ir directo a</span>
+            <h2 style="font-size:1.1rem;">Accesos rápidos</h2>
+          </div>
+        </div>
+        <div class="quick-grid">
+          <a class="quick-card" href="#inicio">
+            <span class="quick-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10"/></svg></span>
+            <span><strong>Editar página de inicio</strong><span>Hero, categorías, marcas y más</span></span>
+          </a>
+          <a class="quick-card" href="#usuarios">
+            <span class="quick-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0"/></svg></span>
+            <span><strong>Gestionar usuarios</strong><span>Roles y accesos del panel</span></span>
+          </a>
+          <a class="quick-card" href="#configuracion">
+            <span class="quick-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/></svg></span>
+            <span><strong>Configuración general</strong><span>Empresa, marca y colores</span></span>
+          </a>
+        </div>
+      </section>
+
+      <!-- ============ PÁGINA DE INICIO ============ -->
+      <section class="admin-view" id="view-inicio">
+        <div class="view-head">
+          <div>
+            <span class="eyebrow">Contenido del home</span>
+            <h2>Página de Inicio</h2>
+          </div>
+        </div>
+
+        <div class="subtabs">
+          <button class="subtab-btn is-active" data-subtab="hero" type="button">Hero</button>
+          <button class="subtab-btn" data-subtab="estadisticas" type="button">Estadísticas</button>
+          <button class="subtab-btn" data-subtab="categorias" type="button">Categorías</button>
+          <button class="subtab-btn" data-subtab="marcas" type="button">Marcas</button>
+          <button class="subtab-btn" data-subtab="beneficios" type="button">Beneficios</button>
+          <button class="subtab-btn" data-subtab="contacto" type="button">Contacto</button>
+          <button class="subtab-btn" data-subtab="footer" type="button">Footer</button>
+        </div>
+
+        <!-- Subvista: Hero -->
+        <div class="subview is-active" id="subview-hero">
+          <div class="panel">
+            <div class="panel-head">
+              <div><h3>Hero principal</h3><p>Contenido del banner de bienvenida.</p></div>
+            </div>
+            <form id="hero-form">
+              <input type="hidden" id="hero-id" />
+              <div class="form-grid cols-2">
+                <div class="form-field"><label for="hero-titulo">Título</label>
+                  <input class="form-input" id="hero-titulo" placeholder="Protección real para manos que trabajan" /></div>
+                <div class="form-field"><label for="hero-subtitulo">Subtítulo</label>
+                  <input class="form-input" id="hero-subtitulo" placeholder="Sistema de distribución industrial" /></div>
+              </div>
+              <div class="form-field mt-sm"><label for="hero-descripcion">Descripción</label>
+                <textarea class="form-textarea" id="hero-descripcion" placeholder="Calzado industrial y EPP certificado…"></textarea></div>
+              <div class="form-field mt-sm"><label for="hero-imagen">URL de imagen</label>
+                <input class="form-input" id="hero-imagen" placeholder="https://…" />
+                <p class="hint">Déjalo vacío para conservar la ilustración por defecto del sitio.</p></div>
+              <div class="form-grid cols-2 mt-sm">
+                <div class="form-field"><label for="hero-texto-boton">Texto botón principal</label>
+                  <input class="form-input" id="hero-texto-boton" placeholder="Ver catálogo" /></div>
+                <div class="form-field"><label for="hero-url-boton">Link botón principal</label>
+                  <input class="form-input" id="hero-url-boton" placeholder="catalogo.html" /></div>
+                <div class="form-field"><label for="hero-texto-wa">Texto botón WhatsApp</label>
+                  <input class="form-input" id="hero-texto-wa" placeholder="Contactar por WhatsApp" /></div>
+                <div class="form-field"><label for="hero-url-wa">Link botón WhatsApp</label>
+                  <input class="form-input" id="hero-url-wa" placeholder="https://wa.me/…" /></div>
+              </div>
+              <div class="form-switch-row mt-sm">
+                <span class="switch"><input type="checkbox" id="hero-activo" /><span class="track"></span><span class="thumb"></span></span>
+                <label for="hero-activo" style="font-size:0.85rem;color:var(--steel-gray)">Hero activo en el sitio</label>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary"><span class="btn-loading-dot"></span><span class="btn-label">Guardar hero</span></button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Subvista: Estadísticas -->
+        <div class="subview" id="subview-estadisticas">
+          <div class="panel">
+            <div class="panel-head">
+              <div><h3>Estadísticas del hero</h3><p>Los datos numéricos que aparecen bajo el texto principal.</p></div>
+              <button class="btn btn-primary btn-sm" id="add-estadistica-btn" type="button">+ Agregar</button>
+            </div>
+            <div class="admin-table-wrap">
+              <table class="admin-table" id="tabla-estadisticas">
+                <thead><tr><th>Cantidad</th><th>Texto</th><th>Orden</th><th>Estado</th><th></th></tr></thead>
+                <tbody><tr><td colspan="5" class="table-empty">Cargando…</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Subvista: Categorías -->
+        <div class="subview" id="subview-categorias">
+          <div class="panel">
+            <div class="panel-head">
+              <div><h3>Categorías del home</h3><p>Tarjetas de categorías mostradas en la página de inicio.</p></div>
+              <button class="btn btn-primary btn-sm" id="add-categoria-btn" type="button">+ Agregar</button>
+            </div>
+            <div class="admin-table-wrap">
+              <table class="admin-table" id="tabla-categorias">
+                <thead><tr><th>Imagen</th><th>Nombre</th><th>Orden</th><th>Estado</th><th></th></tr></thead>
+                <tbody><tr><td colspan="5" class="table-empty">Cargando…</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Subvista: Marcas -->
+        <div class="subview" id="subview-marcas">
+          <div class="panel">
+            <div class="panel-head">
+              <div><h3>Marcas</h3><p>Marcas mostradas en el carrusel del home.</p></div>
+              <button class="btn btn-primary btn-sm" id="add-marca-btn" type="button">+ Agregar</button>
+            </div>
+            <div class="admin-table-wrap">
+              <table class="admin-table" id="tabla-marcas">
+                <thead><tr><th>Logo</th><th>Nombre</th><th>Orden</th><th>Estado</th><th></th></tr></thead>
+                <tbody><tr><td colspan="5" class="table-empty">Cargando…</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Subvista: Beneficios -->
+        <div class="subview" id="subview-beneficios">
+          <div class="panel">
+            <div class="panel-head">
+              <div><h3>Por qué elegirnos</h3><p>Tarjetas de beneficios mostradas en el home.</p></div>
+              <button class="btn btn-primary btn-sm" id="add-beneficio-btn" type="button">+ Agregar</button>
+            </div>
+            <div class="admin-table-wrap">
+              <table class="admin-table" id="tabla-beneficios">
+                <thead><tr><th>Beneficio</th><th>Ícono</th><th>Orden</th><th>Estado</th><th></th></tr></thead>
+                <tbody><tr><td colspan="5" class="table-empty">Cargando…</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Subvista: Contacto -->
+        <div class="subview" id="subview-contacto">
+          <div class="panel">
+            <div class="panel-head"><div><h3>Datos de contacto</h3><p>Información mostrada en la sección de contacto del home.</p></div></div>
+            <form id="contacto-form">
+              <div class="form-grid cols-2">
+                <div class="form-field"><label for="contacto-direccion">Dirección</label>
+                  <input class="form-input" id="contacto-direccion" /></div>
+                <div class="form-field"><label for="contacto-correo">Correo</label>
+                  <input class="form-input" type="email" id="contacto-correo" /></div>
+                <div class="form-field"><label for="contacto-whatsapp">WhatsApp (con código de país)</label>
+                  <input class="form-input" id="contacto-whatsapp" placeholder="50588888888" /></div>
+                <div class="form-field"><label for="contacto-horario">Horario</label>
+                  <input class="form-input" id="contacto-horario" /></div>
+              </div>
+              <div class="form-field mt-sm"><label for="contacto-mapa">URL de mapa embebido (opcional)</label>
+                <input class="form-input" id="contacto-mapa" placeholder="https://www.google.com/maps/embed?…" /></div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary"><span class="btn-loading-dot"></span><span class="btn-label">Guardar contacto</span></button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Subvista: Footer -->
+        <div class="subview" id="subview-footer">
+          <div class="panel">
+            <div class="panel-head"><div><h3>Footer</h3><p>Copyright y redes sociales del pie de página.</p></div></div>
+            <form id="footer-form">
+              <div class="form-field"><label for="footer-copyright">Texto de copyright</label>
+                <input class="form-input" id="footer-copyright" /></div>
+              <div class="form-grid cols-2 mt-sm">
+                <div class="form-field"><label for="footer-facebook">Facebook</label>
+                  <input class="form-input" id="footer-facebook" placeholder="https://facebook.com/…" /></div>
+                <div class="form-field"><label for="footer-instagram">Instagram</label>
+                  <input class="form-input" id="footer-instagram" placeholder="https://instagram.com/…" /></div>
+                <div class="form-field"><label for="footer-linkedin">LinkedIn</label>
+                  <input class="form-input" id="footer-linkedin" placeholder="https://linkedin.com/…" /></div>
+                <div class="form-field"><label for="footer-whatsapp">WhatsApp</label>
+                  <input class="form-input" id="footer-whatsapp" placeholder="50588888888" /></div>
+                <div class="form-field"><label for="footer-correo">Correo</label>
+                  <input class="form-input" type="email" id="footer-correo" /></div>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary"><span class="btn-loading-dot"></span><span class="btn-label">Guardar footer</span></button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ CATÁLOGO (Próximamente) ============ -->
+      <section class="admin-view" id="view-catalogo">
+        <div class="coming-soon">
+          <span class="eyebrow">Módulo en desarrollo</span>
+          <span class="coming-soon-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a4 4 0 0 1 8 0v2"/></svg>
+          </span>
+          <h3>Catálogo</h3>
+          <p>Disponible en una próxima actualización. Aquí podrás crear, editar y organizar todo el catálogo de productos.</p>
+        </div>
+      </section>
+
+      <!-- ============ COTIZACIONES (Próximamente) ============ -->
+      <section class="admin-view" id="view-cotizaciones">
+        <div class="coming-soon">
+          <span class="eyebrow">Módulo en desarrollo</span>
+          <span class="coming-soon-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6l3 4v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/><path d="M9 12h6M9 16h4"/></svg>
+          </span>
+          <h3>Cotizaciones</h3>
+          <p>Disponible en una próxima actualización. Aquí verás las solicitudes de cotización enviadas por tus clientes.</p>
+        </div>
+      </section>
+
+      <!-- ============ USUARIOS ============ -->
+      <section class="admin-view" id="view-usuarios">
+        <div class="view-head">
+          <div>
+            <span class="eyebrow">Accesos al panel</span>
+            <h2>Usuarios</h2>
+          </div>
+          <button class="btn btn-primary btn-sm" id="add-usuario-btn" type="button">+ Crear usuario</button>
+        </div>
+
+        <div class="panel">
+          <div class="admin-table-wrap">
+            <table class="admin-table" id="tabla-usuarios">
+              <thead><tr><th>Nombre</th><th>Correo</th><th>Rol</th><th>Estado</th><th></th></tr></thead>
+              <tbody><tr><td colspan="5" class="table-empty">Cargando…</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel" style="background:var(--off-white); border-style:dashed;">
+          <p class="text-muted">
+            Por seguridad, la creación y eliminación de usuarios de Supabase Auth se realiza desde
+            <strong>Supabase Dashboard → Authentication → Users</strong>. En cuanto un usuario se crea ahí,
+            su perfil aparece automáticamente en esta tabla para asignarle rol y estado.
+          </p>
+        </div>
+      </section>
+
+      <!-- ============ CONFIGURACIÓN ============ -->
+      <section class="admin-view" id="view-configuracion">
+        <div class="view-head">
+          <div>
+            <span class="eyebrow">Identidad y datos generales</span>
+            <h2>Configuración</h2>
+          </div>
+        </div>
+
+        <div class="panel">
+          <form id="configuracion-form">
+            <div class="form-grid cols-2">
+              <div class="form-field"><label for="config-nombre">Nombre de la empresa</label>
+                <input class="form-input" id="config-nombre" /></div>
+              <div class="form-field"><label for="config-correo">Correo principal</label>
+                <input class="form-input" type="email" id="config-correo" /></div>
+              <div class="form-field"><label for="config-logo">URL del logo</label>
+                <input class="form-input" id="config-logo" placeholder="https://…" /></div>
+              <div class="form-field"><label for="config-favicon">URL del favicon</label>
+                <input class="form-input" id="config-favicon" placeholder="https://…" /></div>
+              <div class="form-field"><label for="config-whatsapp">WhatsApp</label>
+                <input class="form-input" id="config-whatsapp" placeholder="50588888888" /></div>
+              <div class="form-field"><label for="config-direccion">Dirección</label>
+                <input class="form-input" id="config-direccion" /></div>
+            </div>
+
+            <div class="panel-head mt-sm" style="margin-top:var(--space-lg);">
+              <div><h3 style="font-size:0.9rem;">Colores institucionales</h3></div>
+            </div>
+            <div class="form-grid cols-2">
+              <div class="form-field"><label for="config-color-navy">Azul oscuro</label>
+                <input class="form-input" type="color" id="config-color-navy" style="height:44px;padding:4px;" /></div>
+              <div class="form-field"><label for="config-color-blue">Azul industrial</label>
+                <input class="form-input" type="color" id="config-color-blue" style="height:44px;padding:4px;" /></div>
+              <div class="form-field"><label for="config-color-safety">Acento de seguridad</label>
+                <input class="form-input" type="color" id="config-color-safety" style="height:44px;padding:4px;" /></div>
+            </div>
+            <p class="hint mt-sm">Estos valores quedan guardados para uso futuro del sistema de temas. Cambiarlos aquí aún no actualiza los estilos del sitio automáticamente.</p>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary"><span class="btn-loading-dot"></span><span class="btn-label">Guardar configuración</span></button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- ============ MI PERFIL ============ -->
+      <section class="admin-view" id="view-perfil">
+        <div class="view-head">
+          <div>
+            <span class="eyebrow">Tu cuenta</span>
+            <h2>Mi Perfil</h2>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><div><h3>Información personal</h3></div></div>
+          <form id="perfil-form">
+            <div class="form-grid cols-2">
+              <div class="form-field"><label for="perfil-nombre">Nombre</label>
+                <input class="form-input" id="perfil-nombre" /></div>
+              <div class="form-field"><label for="perfil-correo">Correo</label>
+                <input class="form-input" id="perfil-correo" disabled /></div>
+            </div>
+            <div class="form-field mt-sm"><label for="perfil-avatar">URL de fotografía</label>
+              <input class="form-input" id="perfil-avatar" placeholder="https://…" /></div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary"><span class="btn-loading-dot"></span><span class="btn-label">Guardar cambios</span></button>
+            </div>
+          </form>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><div><h3>Cambiar contraseña</h3></div></div>
+          <form id="perfil-password-form">
+            <div class="form-grid cols-2">
+              <div class="form-field"><label for="perfil-password">Nueva contraseña</label>
+                <input class="form-input" type="password" id="perfil-password" minlength="6" required /></div>
+              <div class="form-field"><label for="perfil-password-confirm">Confirmar contraseña</label>
+                <input class="form-input" type="password" id="perfil-password-confirm" minlength="6" required /></div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary"><span class="btn-loading-dot"></span><span class="btn-label">Actualizar contraseña</span></button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<!-- ============ MODAL GENÉRICO ============ -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="panel" id="modal-box"></div>
+</div>
+
+<!-- ============ TOAST ============ -->
+<div class="toast" id="admin-toast" role="status">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m9 12 2 2 4-4"/></svg>
+  <span class="toast-text"></span>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>
