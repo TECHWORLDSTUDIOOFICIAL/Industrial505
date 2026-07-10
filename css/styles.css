@@ -757,6 +757,13 @@ h1, h2, h3, h4 {
 .map-placeholder .map-inner { max-width: 280px; }
 .map-placeholder svg { width: 36px; height: 36px; margin-inline: auto; margin-bottom: 10px; color: var(--safety); }
 .map-placeholder p { font-size: 0.85rem; color: rgba(255,255,255,0.75); margin-top: 6px; }
+.map-placeholder iframe {
+  width: 100%;
+  height: 100%;
+  min-height: 320px;
+  border: 0;
+  display: block;
+}
 
 /* ---------- CTA WhatsApp flotante ---------- */
 .wa-float {
