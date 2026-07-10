@@ -369,6 +369,7 @@ function bindCardActions(grid) {
       waBtn.addEventListener("click", (e) => {
         e.preventDefault();
         const msg = `Hola INDUSTRIAL 505, quisiera cotizar: *${product.nombre}* (${formatCurrency(product.precio_descuento || product.precio)}).`;
+        guardarCotizacion([{ id: product.id, nombre: product.nombre, precio: product.precio_descuento || product.precio, qty: 1 }], product.precio_descuento || product.precio);
         window.open(`https://wa.me/${window.WA_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank", "noopener");
       });
     }
@@ -511,6 +512,7 @@ function openFichaTecnica(p) {
   document.getElementById("sheet-quote-wa")?.addEventListener("click", (e) => {
     e.preventDefault();
     const msg = `Hola INDUSTRIAL 505, quisiera cotizar: *${p.nombre}* (${formatCurrency(p.precio_descuento || p.precio)}).`;
+    guardarCotizacion([{ id: p.id, nombre: p.nombre, precio: p.precio_descuento || p.precio, qty: 1 }], p.precio_descuento || p.precio);
     window.open(`https://wa.me/${window.WA_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank", "noopener");
   });
 }
@@ -643,8 +645,28 @@ function initCartUI() {
     if (!cart.length) { showToast("Tu carrito está vacío."); return; }
     const lines = cart.map((i) => `• ${i.nombre} x${i.qty} — ${formatCurrency(i.precio * i.qty)}`).join("\n");
     const msg = `Hola INDUSTRIAL 505, quisiera cotizar los siguientes productos:\n\n${lines}\n\nTotal aproximado: ${formatCurrency(cartTotal(cart))}`;
+    guardarCotizacion(cart, cartTotal(cart));
     window.open(`https://wa.me/${window.WA_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank", "noopener");
   });
 
   renderCartPanel();
+}
+
+/* ---------------------------------------------------------
+   Registro de cotizaciones (para el módulo "Cotizaciones" del
+   panel admin). Es de "mejor esfuerzo": si falla el guardado,
+   el mensaje de WhatsApp se envía igual, nunca se bloquea al
+   cliente por un error de conexión con Supabase.
+--------------------------------------------------------- */
+async function guardarCotizacion(items, total) {
+  if (!window.supabaseClient) return;
+  try {
+    await window.supabaseClient.from("cotizaciones").insert({
+      items: items.map((i) => ({ id: i.id, nombre: i.nombre, precio: i.precio, qty: i.qty })),
+      total,
+      origen: "catalogo",
+    });
+  } catch (err) {
+    console.warn("No se pudo registrar la cotización (no afecta el envío por WhatsApp):", err);
+  }
 }
