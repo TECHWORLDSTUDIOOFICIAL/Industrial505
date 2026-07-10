@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Catálogo | INDUSTRIAL 505</title>
+<meta name="description" content="Catálogo completo de calzado industrial, botas de seguridad y equipo de protección personal (EPP) de INDUSTRIAL 505." />
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="css/styles.css" />
+<link rel="stylesheet" href="css/catalogo.css" />
+</head>
+<body>
+
+<!-- ============ HEADER ============ -->
+<header class="site-header">
+  <div class="container">
+    <a href="index.html" class="brand">
+      <svg class="brand-mark" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect x="4" y="4" width="40" height="40" rx="8" fill="#0A2342"/>
+        <path d="M24 10 34 14v8c0 8-4.3 13.5-10 17-5.7-3.5-10-9-10-17v-8l10-4Z" fill="#F5F6F8"/>
+        <path d="M24 10 34 14v8c0 8-4.3 13.5-10 17V10Z" fill="#F2A900"/>
+      </svg>
+      <span>
+        <span class="brand-word">INDUSTRIAL<span>505</span></span>
+        <span class="brand-tag">Equipo &amp; Protección</span>
+      </span>
+    </a>
+
+    <nav class="main-nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="catalogo.html">Catálogo</a></li>
+        <li><a href="index.html#marcas">Marcas</a></li>
+        <li><a href="index.html#nosotros">Nosotros</a></li>
+        <li><a href="index.html#contacto">Contacto</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-actions">
+      <a href="autenticacion.html" class="btn btn-primary btn-sm">Iniciar sesión</a>
+      <button class="nav-toggle" aria-label="Abrir menú" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+
+  <nav class="mobile-nav" aria-label="Navegación móvil">
+    <ul>
+      <li><a href="index.html">Inicio</a></li>
+      <li><a href="catalogo.html">Catálogo</a></li>
+      <li><a href="index.html#marcas">Marcas</a></li>
+      <li><a href="index.html#nosotros">Nosotros</a></li>
+      <li><a href="index.html#contacto">Contacto</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ============ ENCABEZADO DEL CATÁLOGO ============ -->
+  <section class="catalog-hero">
+    <div class="container">
+      <span class="eyebrow">Catálogo completo</span>
+      <h1>Equipo de protección para cada operación</h1>
+      <p>Encuentra calzado industrial, botas de seguridad y EPP certificado. Filtra por marca u ordena por precio para encontrar justo lo que necesitas.</p>
+
+      <div class="search-wrap">
+        <div class="search-input-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="text" id="catalog-search" class="search-input" placeholder="Busca por nombre o marca… ej: casco, ADOC, botas" autocomplete="off" />
+          <button class="search-clear" id="search-clear" type="button" aria-label="Limpiar búsqueda">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <div class="search-suggestions" id="search-suggestions"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ BARRA DE FILTROS ============ -->
+  <div class="filters-bar">
+    <div class="container">
+      <div class="filters-row">
+        <div class="filter-select-wrap">
+          <label for="sort-select">Ordenar</label>
+          <select id="sort-select" class="filter-select">
+            <option value="orden">Recomendados</option>
+            <option value="precio-asc">Precio: menor a mayor</option>
+            <option value="precio-desc">Precio: mayor a menor</option>
+          </select>
+        </div>
+
+        <div class="filter-chips" id="brand-filters">
+          <!-- Se llena dinámicamente con las marcas presentes en el catálogo -->
+        </div>
+
+        <button class="filters-clear" id="clear-filters" type="button">Limpiar filtros</button>
+        <span class="filters-meta" id="filters-meta"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ RESULTADOS ============ -->
+  <section class="catalog-results" id="catalog-results">
+    <div class="container">
+      <div class="catalog-grid" id="catalog-grid">
+        <div class="catalog-empty">
+          <span class="catalog-empty-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a4 4 0 0 1 8 0v2"/></svg>
+          </span>
+          <h3>Cargando catálogo…</h3>
+          <p>Un momento por favor.</p>
+        </div>
+      </div>
+      <div class="pagination" id="pagination"></div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <span class="brand-word">INDUSTRIAL<span>505</span></span>
+        <p>Distribución de calzado industrial y equipo de protección personal certificado para tu operación.</p>
+        <div class="footer-social">
+          <a href="#" data-config="facebook" target="_blank" rel="noopener" aria-label="Facebook">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-7.5H16l.5-3H13.5V8.3c0-.9.3-1.5 1.6-1.5H16.5V4.2C16.2 4.1 15.2 4 14 4c-2.4 0-4 1.5-4 4.2V10.5H7.5v3H10V21h3.5Z"/></svg>
+          </a>
+          <a href="#" data-config="instagram" target="_blank" rel="noopener" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17" cy="7" r="1"/></svg>
+          </a>
+          <a href="#" data-config="linkedin" target="_blank" rel="noopener" aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5A2.5 2.5 0 1 0 5 8.5a2.5 2.5 0 0 0-.02-5ZM3 9.75h4V21H3V9.75Zm7 0h3.8v1.53h.05c.53-.94 1.82-1.93 3.75-1.93 4 0 4.75 2.4 4.75 5.5V21h-4v-5.5c0-1.3-.02-3-1.9-3-1.9 0-2.2 1.4-2.2 2.9V21h-4V9.75Z"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>Enlaces rápidos</h4>
+        <ul>
+          <li><a href="index.html">Inicio</a></li>
+          <li><a href="catalogo.html">Catálogo</a></li>
+          <li><a href="index.html#marcas">Marcas</a></li>
+          <li><a href="index.html#nosotros">Nosotros</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Empresa</h4>
+        <ul>
+          <li><a href="index.html#contacto">Contacto</a></li>
+          <li><a href="autenticacion.html">Iniciar sesión</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Contacto</h4>
+        <ul>
+          <li><a href="#" data-config="correo">contacto@industrial505.com</a></li>
+          <li><a href="#" data-config="whatsapp-link" target="_blank" rel="noopener">Escribir por WhatsApp</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© <span id="year"></span> INDUSTRIAL 505. Todos los derechos reservados.</span>
+      <span>Sitio construido con HTML, CSS, JavaScript y Supabase.</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ============ CARRITO FLOTANTE ============ -->
+<button class="cart-float" id="cart-float" aria-label="Ver carrito" type="button">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.5 3h2l2.6 12.4a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 2-1.6L22.5 7H6"/></svg>
+  <span class="cart-float-badge" id="cart-badge">0</span>
+</button>
+
+<!-- Botón flotante de WhatsApp -->
+<a href="#" class="wa-float" data-config="whatsapp-link" target="_blank" rel="noopener" aria-label="Contactar por WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 15.5c-1.2 0-2.4-.2-3.5-.6a1 1 0 0 0-1 .2l-1.6 1.6a14.6 14.6 0 0 1-6.6-6.6l1.6-1.6a1 1 0 0 0 .2-1A11 11 0 0 1 8.5 4a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1c0 9.4 7.6 17 17 17a1 1 0 0 0 1-1v-3.5a1 1 0 0 0-1-1Z"/></svg>
+</a>
+
+<!-- ============ PANEL DE CARRITO ============ -->
+<div class="cart-overlay" id="cart-overlay"></div>
+<aside class="cart-panel" id="cart-panel">
+  <div class="cart-header">
+    <h3>Tu carrito de cotización</h3>
+    <button class="modal-close-btn" id="cart-close" aria-label="Cerrar carrito" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div class="cart-items" id="cart-items"></div>
+  <div class="cart-footer">
+    <div class="cart-total-row">
+      <span class="label">Total aproximado</span>
+      <span class="value" id="cart-total">C$ 0.00</span>
+    </div>
+    <a href="#" class="btn btn-whatsapp btn-block" id="cart-checkout-wa">
+      Solicitar cotización por WhatsApp
+    </a>
+    <p class="text-muted" style="font-size:0.78rem; margin-top:8px; text-align:center;">Los precios son referenciales. Un asesor confirmará disponibilidad final.</p>
+  </div>
+</aside>
+
+<!-- ============ MODAL DE FICHA TÉCNICA ============ -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="panel" id="modal-box"></div>
+</div>
+
+<!-- ============ TOAST ============ -->
+<div class="toast" id="catalog-toast" role="status">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m9 12 2 2 4-4"/></svg>
+  <span class="toast-text"></span>
+</div>
+
+<script>document.getElementById("year") && (document.getElementById("year").textContent = new Date().getFullYear());</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/catalogo.js"></script>
+</body>
+</html>
