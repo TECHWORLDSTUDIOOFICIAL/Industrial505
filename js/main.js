@@ -157,6 +157,27 @@ async function loadConfiguracion() {
   document.querySelectorAll("[data-config='facebook']").forEach((el) => el.setAttribute("href", data.facebook_url || "#"));
   document.querySelectorAll("[data-config='instagram']").forEach((el) => el.setAttribute("href", data.instagram_url || "#"));
   document.querySelectorAll("[data-config='linkedin']").forEach((el) => el.setAttribute("href", data.linkedin_url || "#"));
+
+  loadMapa(data.mapa_embed_url);
+}
+
+/* ---------------------------------------------------------
+   Mapa de ubicación (Google Maps embebido)
+   Editable desde admin.html > Página de Inicio > Contacto.
+   Si no hay URL configurada, se conserva el placeholder.
+--------------------------------------------------------- */
+function loadMapa(mapaUrl) {
+  const container = document.getElementById("contact-map");
+  if (!container || !mapaUrl) return; // sin URL: se deja el placeholder tal cual
+
+  const iframe = document.createElement("iframe");
+  iframe.src = mapaUrl;
+  iframe.loading = "lazy";
+  iframe.referrerPolicy = "no-referrer-when-downgrade";
+  iframe.allowFullscreen = true;
+  iframe.title = "Ubicación de INDUSTRIAL 505";
+  container.innerHTML = "";
+  container.appendChild(iframe);
 }
 
 /* ---------------------------------------------------------
