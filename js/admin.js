@@ -725,7 +725,7 @@ async function loadProductosList() {
         <td><strong>${escapeHtml(p.nombre)}</strong>${p.sku ? `<br><span class="text-muted">SKU: ${escapeHtml(p.sku)}</span>` : ""}</td>
         <td>${escapeHtml(p.marcas?.nombre || "—")}</td>
         <td>${escapeHtml(p.categorias?.nombre || "—")}</td>
-        <td>${formatMoney(p.precio_descuento || p.precio)}${p.precio_descuento ? `<br><span class="text-muted" style="text-decoration:line-through;">${formatMoney(p.precio)}</span>` : ""}</td>
+        <td>${formatMoney(p.precio_descuento || p.precio)}${p.mostrar_iva ? ` <span class="badge iva">+IVA</span>` : ""}${p.precio_descuento ? `<br><span class="text-muted" style="text-decoration:line-through;">${formatMoney(p.precio)}</span>` : ""}</td>
         <td>
           <span class="badge ${disponible ? "on" : "off"}">${disponible ? "Disponible" : "Agotado"}</span><br>
           ${badge(p.activo)}
@@ -773,10 +773,11 @@ async function openProductoModal(id) {
       { key: "categoria_id", label: "Categoría", value: row?.categoria_id, type: "select", options: [{ value: "", label: "Sin categoría" }, ...categorias.map((c) => ({ value: c.id, label: c.nombre }))] },
       { key: "precio", label: "Precio (C$)", value: row?.precio ?? 0, type: "number" },
       { key: "precio_descuento", label: "Precio con descuento (opcional)", value: row?.precio_descuento ?? "", type: "number" },
+      { key: "mostrar_iva", label: "Mostrar \"+IVA\" junto al precio en el catálogo", value: row?.mostrar_iva ?? false, type: "switch" },
       { key: "stock", label: "Stock", value: row?.stock ?? 0, type: "number" },
       { key: "disponible", label: "Disponibilidad", value: row ? String(row.disponible) : "true", type: "select", options: [{ value: "true", label: "Disponible" }, { value: "false", label: "Agotado" }] },
       { key: "imagen_url", label: "Imagen del producto", value: row?.imagen_url, type: "file", accept: "image/*", bucket: "imagenes", folder: "productos" },
-      { key: "ficha_tecnica_url", label: "Ficha técnica (PDF)", value: row?.ficha_tecnica_url, type: "file", accept: "application/pdf", bucket: "fichas-tecnicas", folder: "productos" },
+      { key: "ficha_tecnica_url", label: "Ficha técnica (imagen)", value: row?.ficha_tecnica_url, type: "file", accept: "image/*", bucket: "fichas-tecnicas", folder: "productos" },
       { key: "orden", label: "Orden", value: row?.orden ?? 0, type: "number" },
       { key: "descripcion", label: "Descripción", value: row?.descripcion, type: "textarea" },
       { key: "especificaciones", label: "Especificaciones técnicas", value: row?.especificaciones, type: "textarea" },
@@ -790,6 +791,7 @@ async function openProductoModal(id) {
         categoria_id: values.categoria_id || null,
         precio: Number(values.precio) || 0,
         precio_descuento: values.precio_descuento ? Number(values.precio_descuento) : null,
+        mostrar_iva: !!values.mostrar_iva,
         stock: Number(values.stock) || 0,
         disponible: values.disponible === "true",
         imagen_url: values.imagen_url || null,
@@ -1191,6 +1193,19 @@ function openFormModal({ title, fields, activo, onSave, note, hideActivo, hideSa
     if (f.type === "textarea") {
       return `<div class="form-field full-width"><label>${f.label}</label><textarea class="form-textarea" data-field="${f.key}">${escapeHtml(f.value || "")}</textarea></div>`;
     }
+    if (f.type === "switch") {
+      // Campo booleano estilo interruptor (igual que el switch de "Activo"),
+      // usado por ejemplo para el "+IVA" de cada producto.
+      return `<div class="form-field full-width">
+        <div class="form-switch-row">
+          <span class="switch">
+            <input type="checkbox" data-field-switch="${f.key}" ${f.value ? "checked" : ""} />
+            <span class="track"></span><span class="thumb"></span>
+          </span>
+          <label style="font-size:0.85rem;color:var(--steel-gray)">${f.label}</label>
+        </div>
+      </div>`;
+    }
     if (f.type === "file") {
       const isPdf = (f.accept || "").includes("pdf");
       const previewInner = f.value
@@ -1292,6 +1307,7 @@ function openFormModal({ title, fields, activo, onSave, note, hideActivo, hideSa
 
         const values = {};
         box.querySelectorAll("[data-field]").forEach((el) => { values[el.dataset.field] = el.value; });
+        box.querySelectorAll("[data-field-switch]").forEach((el) => { values[el.dataset.fieldSwitch] = el.checked; });
         values.activo = document.getElementById("modal-activo")?.checked ?? true;
 
         await onSave(values);
