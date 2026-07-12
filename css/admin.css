@@ -454,6 +454,8 @@ body.admin-body {
 .badge.off { background: #F3F4F6; color: var(--steel-gray); }
 .badge.role-admin { background: rgba(29,78,137,0.1); color: var(--steel-blue); }
 .badge.role-editor { background: rgba(242,169,0,0.14); color: var(--safety-dark); }
+/* Etiqueta "+IVA" mostrada junto al precio en la tabla de productos */
+.badge.iva { background: rgba(29,78,137,0.08); color: var(--steel-blue); }
 
 .row-actions { display: flex; gap: 6px; justify-content: flex-end; }
 .icon-btn {
