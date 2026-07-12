@@ -25,6 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initClearFilters();
   initCartUI();
   initModalClose();
+  initFichaLightbox();
 
   loadProductos();
   renderCartBadge();
@@ -403,7 +404,7 @@ function initSearch() {
         .map(
           (p, i) => `
         <button class="suggestion-item" type="button" data-id="${p.id}" data-index="${i}">
-          <span class="suggestion-thumb">${p.imagen_url ? `<img src="${escapeHtml(p.imagen_url)}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:7px;" />` : placeholderIcon}</span>
+          <span class="suggestion-thumb">${p.imagen_url ? `<img src="${escapeHtml(p.imagen_url)}" alt="" style="width:100%;height:100%;object-fit:contain;border-radius:7px;" />` : placeholderIcon}</span>
           <span class="suggestion-text">
             <span class="name">${escapeHtml(p.nombre)}</span>
             <span class="meta">${escapeHtml(p.marcas?.nombre || "")}</span>
@@ -500,7 +501,7 @@ function openFichaTecnica(p) {
         <div class="sheet-actions">
           <button class="btn btn-primary" id="sheet-add-cart" ${disponible ? "" : "disabled"}>Añadir al carrito</button>
           <a class="btn btn-whatsapp" id="sheet-quote-wa" href="#" target="_blank" rel="noopener">Cotizar por WhatsApp</a>
-          ${p.ficha_tecnica_url ? `<a class="btn btn-ghost-navy" href="${escapeHtml(p.ficha_tecnica_url)}" target="_blank" rel="noopener">Descargar PDF</a>` : ""}
+          ${p.ficha_tecnica_url ? `<button class="btn btn-ghost-navy" id="sheet-view-ficha" type="button">Ver ficha técnica</button>` : ""}
         </div>
       </div>
     </div>
@@ -515,6 +516,11 @@ function openFichaTecnica(p) {
     guardarCotizacion([{ id: p.id, nombre: p.nombre, precio: p.precio_descuento || p.precio, qty: 1 }], p.precio_descuento || p.precio);
     window.open(`https://wa.me/${window.WA_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank", "noopener");
   });
+  // FIX #3: la ficha técnica ahora se muestra como imagen en un visor propio,
+  // en vez de forzar la descarga de un PDF.
+  document.getElementById("sheet-view-ficha")?.addEventListener("click", () => {
+    openFichaLightbox(p.ficha_tecnica_url, p.nombre);
+  });
 }
 
 function initModalClose() {
@@ -523,6 +529,32 @@ function initModalClose() {
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeModal(); });
 }
 function closeModal() { document.getElementById("modal-overlay")?.classList.remove("is-visible"); }
+
+/* =========================================================
+   LIGHTBOX DE IMAGEN — FICHA TÉCNICA
+   ========================================================= */
+function initFichaLightbox() {
+  const overlay = document.getElementById("ficha-lightbox");
+  const closeBtn = document.getElementById("ficha-lightbox-close");
+  if (!overlay) return;
+  closeBtn?.addEventListener("click", closeFichaLightbox);
+  overlay.addEventListener("click", (e) => { if (e.target === overlay) closeFichaLightbox(); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeFichaLightbox(); });
+}
+
+function openFichaLightbox(url, nombre) {
+  if (!url) return;
+  const overlay = document.getElementById("ficha-lightbox");
+  const img = document.getElementById("ficha-lightbox-img");
+  if (!overlay || !img) return;
+  img.src = url;
+  img.alt = nombre ? `Ficha técnica — ${nombre}` : "Ficha técnica";
+  overlay.classList.add("is-visible");
+}
+
+function closeFichaLightbox() {
+  document.getElementById("ficha-lightbox")?.classList.remove("is-visible");
+}
 
 /* =========================================================
    CARRITO (persistido en localStorage del navegador)
@@ -598,7 +630,7 @@ function renderCartPanel() {
     .map(
       (i) => `
     <div class="cart-item" data-id="${i.id}">
-      <span class="cart-item-media">${i.imagen_url ? `<img src="${escapeHtml(i.imagen_url)}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:8px;" />` : placeholderIcon}</span>
+      <span class="cart-item-media">${i.imagen_url ? `<img src="${escapeHtml(i.imagen_url)}" alt="" style="width:100%;height:100%;object-fit:contain;border-radius:8px;" />` : placeholderIcon}</span>
       <div class="cart-item-body">
         <div class="cart-item-name">${escapeHtml(i.nombre)}</div>
         <div class="cart-item-price">${formatCurrency(i.precio)}</div>
