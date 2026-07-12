@@ -336,6 +336,7 @@ function productCardHtml(p, i) {
       <div class="catalog-price-row">
         <span class="catalog-price-current">${formatCurrency(hasDiscount ? p.precio_descuento : p.precio)}</span>
         ${hasDiscount ? `<span class="catalog-price-old">${formatCurrency(p.precio)}</span>` : ""}
+        ${p.mostrar_iva ? `<span class="price-iva-tag">+IVA</span>` : ""}
       </div>
       <div class="catalog-card-actions">
         <button class="btn btn-primary btn-sm ${disponible ? "" : "is-disabled"}" data-action="add-cart" ${disponible ? "" : "disabled"}>
@@ -494,6 +495,7 @@ function openFichaTecnica(p) {
         <div class="price">
           ${formatCurrency(hasDiscount ? p.precio_descuento : p.precio)}
           ${hasDiscount ? `<span class="catalog-price-old" style="margin-left:8px;">${formatCurrency(p.precio)}</span>` : ""}
+          ${p.mostrar_iva ? `<span class="price-iva-tag" style="margin-left:8px;">+IVA</span>` : ""}
         </div>
         <span class="stock-badge ${disponible ? "available" : "out"}" style="position:static; display:inline-flex; margin-top:8px;">${disponible ? "Disponible" : "Agotado"}</span>
         ${p.descripcion ? `<p class="desc">${escapeHtml(p.descripcion)}</p>` : ""}
