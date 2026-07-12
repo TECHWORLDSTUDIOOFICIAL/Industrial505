@@ -1196,13 +1196,14 @@ function openFormModal({ title, fields, activo, onSave, note, hideActivo, hideSa
     if (f.type === "switch") {
       // Campo booleano estilo interruptor (igual que el switch de "Activo"),
       // usado por ejemplo para el "+IVA" de cada producto.
+      const switchId = `switch-field-${f.key}`;
       return `<div class="form-field full-width">
         <div class="form-switch-row">
           <span class="switch">
-            <input type="checkbox" data-field-switch="${f.key}" ${f.value ? "checked" : ""} />
+            <input type="checkbox" id="${switchId}" data-field-switch="${f.key}" ${f.value ? "checked" : ""} />
             <span class="track"></span><span class="thumb"></span>
           </span>
-          <label style="font-size:0.85rem;color:var(--steel-gray)">${f.label}</label>
+          <label for="${switchId}" style="font-size:0.85rem;color:var(--steel-gray);cursor:pointer;">${f.label}</label>
         </div>
       </div>`;
     }
