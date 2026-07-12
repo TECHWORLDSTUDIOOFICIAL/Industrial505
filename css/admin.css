@@ -398,6 +398,15 @@ body.admin-body {
 .switch input:checked ~ .track { background: var(--steel-blue); }
 .switch input:checked ~ .thumb { transform: translateX(18px); }
 
+/* FIX: .track y .thumb se dibujan encima del input (van después en el HTML)
+   y por eso solo una esquinita sin cubrir dejaba pasar el clic. Con
+   pointer-events:none dejan pasar el clic de largo hacia el input real,
+   así que ahora TODO el interruptor es clickeable, no solo una parte. */
+.switch .track,
+.switch .thumb {
+  pointer-events: none;
+}
+
 .form-actions {
   display: flex;
   flex-wrap: wrap;
