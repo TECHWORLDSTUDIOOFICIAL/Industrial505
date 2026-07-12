@@ -269,6 +269,18 @@
 .catalog-price-row { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
 .catalog-price-current { font-family: var(--font-display); font-size: 1.2rem; color: var(--navy); font-weight: 600; }
 .catalog-price-old { font-size: 0.8rem; color: var(--steel-gray-light); text-decoration: line-through; }
+/* Etiqueta "+IVA" configurable por producto desde el panel admin */
+.price-iva-tag {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--steel-gray);
+  background: var(--fog);
+  padding: 2px 7px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
 
 .catalog-card-actions { display: flex; flex-direction: column; gap: 6px; margin-top: 6px; }
 .catalog-card-actions .btn { width: 100%; }
