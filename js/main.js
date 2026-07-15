@@ -110,7 +110,36 @@ function markObserved(container) {
 }
 
 /* ---------------------------------------------------------
-   Configuración (contacto, WhatsApp, redes)
+   Aplica el logo / nombre de marca a toda la página.
+   Si el panel admin (Configuración > Logo) tiene un logo_url
+   subido a Supabase Storage, ese se usa; si no, se conserva el
+   logo real por defecto que ya viene en /assets/logo-icon.png.
+   Compartido entre index.html y catalogo.html.
+--------------------------------------------------------- */
+function applyBranding(data) {
+  if (data.logo_url) {
+    document.querySelectorAll("[data-config='logo-img']").forEach((el) => {
+      el.setAttribute("src", data.logo_url);
+    });
+  }
+  if (data.nombre_empresa) {
+    document.querySelectorAll("[data-config='nombre-empresa']").forEach((el) => {
+      // Conserva el <span> del acento de color si existe (ej. "505" en naranja)
+      const accentSpan = el.querySelector("span");
+      el.textContent = data.nombre_empresa;
+      if (accentSpan) el.appendChild(accentSpan);
+    });
+    document.title = document.title.replace(/^[^|]*/, `${data.nombre_empresa} `);
+  }
+  if (data.favicon_url) {
+    document.querySelectorAll("link[rel='icon'], link[rel='shortcut icon'], link[rel='apple-touch-icon']").forEach((el) => {
+      el.setAttribute("href", data.favicon_url);
+    });
+  }
+}
+
+/* ---------------------------------------------------------
+   Configuración (contacto, WhatsApp, redes, logo)
 --------------------------------------------------------- */
 async function loadConfiguracion() {
   const fallback = {
@@ -121,6 +150,9 @@ async function loadConfiguracion() {
     facebook_url: "#",
     instagram_url: "#",
     linkedin_url: "#",
+    nombre_empresa: "",
+    logo_url: "",
+    favicon_url: "",
   };
 
   let data = fallback;
@@ -158,6 +190,7 @@ async function loadConfiguracion() {
   document.querySelectorAll("[data-config='instagram']").forEach((el) => el.setAttribute("href", data.instagram_url || "#"));
   document.querySelectorAll("[data-config='linkedin']").forEach((el) => el.setAttribute("href", data.linkedin_url || "#"));
 
+  applyBranding(data);
   loadMapa(data.mapa_embed_url);
 }
 
@@ -341,7 +374,8 @@ function renderEmptyState(container, message) {
    Hero (título, subtítulo, descripción, imagen, botones)
    Editable desde admin.html > Página de Inicio > Hero.
    Si no hay datos en Supabase, se conserva el contenido
-   original tal cual está escrito en el HTML.
+   original tal cual está escrito en el HTML (logo real de
+   la marca dentro de la placa clara del nameplate).
 --------------------------------------------------------- */
 async function loadHeroContenido() {
   if (!window.supabaseClient) return;
@@ -385,10 +419,13 @@ async function loadHeroContenido() {
     if (data.imagen_url) {
       const media = document.getElementById("hero-visual-media");
       const img = document.createElement("img");
+      img.className = "hero-media-el";
       img.src = data.imagen_url;
       img.alt = data.titulo || "INDUSTRIAL 505";
       img.loading = "lazy";
-      media.querySelector("svg")?.replaceWith(img);
+      // Reemplaza el contenido por defecto (la placa con el logo real),
+      // sea cual sea el elemento actual, por la imagen personalizada.
+      media.querySelector(".hero-media-el")?.replaceWith(img);
     }
   } catch (err) {
     console.error("Error cargando el hero:", err);
