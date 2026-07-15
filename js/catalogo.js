@@ -92,6 +92,24 @@ async function loadConfiguracion() {
   document.querySelectorAll("[data-config='facebook']").forEach((el) => el.setAttribute("href", data.facebook_url || "#"));
   document.querySelectorAll("[data-config='instagram']").forEach((el) => el.setAttribute("href", data.instagram_url || "#"));
   document.querySelectorAll("[data-config='linkedin']").forEach((el) => el.setAttribute("href", data.linkedin_url || "#"));
+
+  // Logo real de la marca (o el personalizado que suba el admin) + nombre + favicon
+  document.querySelectorAll("[data-config='logo-img']").forEach((el) => {
+    if (data.logo_url) el.setAttribute("src", data.logo_url);
+  });
+  if (data.nombre_empresa) {
+    document.querySelectorAll("[data-config='nombre-empresa']").forEach((el) => {
+      const accentSpan = el.querySelector("span");
+      el.textContent = data.nombre_empresa;
+      if (accentSpan) el.appendChild(accentSpan);
+    });
+  }
+  if (data.favicon_url) {
+    document.querySelectorAll("link[rel='icon'], link[rel='shortcut icon'], link[rel='apple-touch-icon']").forEach((el) => {
+      el.setAttribute("href", data.favicon_url);
+    });
+  }
+
   document.getElementById("year") && (document.getElementById("year").textContent = new Date().getFullYear());
 }
 
