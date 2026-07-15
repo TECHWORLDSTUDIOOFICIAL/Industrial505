@@ -225,7 +225,18 @@ h1, h2, h3, h4 {
   flex-shrink: 0;
 }
 
-.brand-mark { width: 40px; height: 40px; }
+/* Logo real de la marca (imagen) — reemplaza el ícono genérico anterior.
+   Se mantiene la relación de aspecto original del logotipo (evita que se
+   vea deformado) y admite ser sobreescrito dinámicamente desde el panel
+   admin (Configuración > Logo) vía [data-config="logo-img"]. */
+.brand-mark {
+  width: 40px;
+  height: auto;
+  max-height: 52px;
+  object-fit: contain;
+  display: block;
+  flex-shrink: 0;
+}
 
 .brand-word {
   font-family: var(--font-display);
@@ -414,6 +425,26 @@ h1, h2, h3, h4 {
   border-radius: calc(var(--radius-lg) - 8px);
   width: 100%;
   display: block;
+}
+
+/* Placa clara detrás del logo real: el logotipo usa tonos navy/azul que se
+   perderían sobre el fondo oscuro del hero, así que se apoya sobre una
+   tarjeta clara para mantener contraste y legibilidad. */
+.hero-logo-plate {
+  aspect-ratio: 1 / 1;
+  background: linear-gradient(160deg, var(--off-white), var(--white));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10%;
+}
+
+.hero-logo-visual {
+  width: 100%;
+  height: 100%;
+  max-width: 320px;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 22px rgba(10,35,66,0.22));
 }
 
 .nameplate-tab {
