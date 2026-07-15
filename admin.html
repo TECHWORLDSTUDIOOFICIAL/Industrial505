@@ -5,7 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Panel administrativo | INDUSTRIAL 505</title>
 <meta name="robots" content="noindex, nofollow" />
-<link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+
+<!-- ============ ICONOS / FAVICON (logo real de la marca) ============ -->
+<link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png" />
+<link rel="icon" href="assets/favicon-192.png" sizes="192x192" type="image/png" />
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+<link rel="shortcut icon" href="assets/favicon-32.png" type="image/png" />
+
 <link rel="stylesheet" href="css/styles.css" />
 <link rel="stylesheet" href="css/admin.css" />
 </head>
@@ -18,13 +24,15 @@
   <!-- ============ SIDEBAR ============ -->
   <aside class="admin-sidebar">
     <div class="admin-sidebar-brand">
-      <svg width="34" height="34" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <rect x="4" y="4" width="40" height="40" rx="8" fill="#0A2342"/>
-        <path d="M24 10 34 14v8c0 8-4.3 13.5-10 17-5.7-3.5-10-9-10-17v-8l10-4Z" fill="#F5F6F8"/>
-        <path d="M24 10 34 14v8c0 8-4.3 13.5-10 17V10Z" fill="#F2A900"/>
-      </svg>
+      <img
+        src="assets/logo-icon.png"
+        data-config="logo-img"
+        alt="INDUSTRIAL 505"
+        width="34" height="45"
+        style="width:34px;height:auto;object-fit:contain;flex-shrink:0;"
+      />
       <span>
-        <span class="brand-word">INDUSTRIAL<span>505</span></span>
+        <span class="brand-word" data-config="nombre-empresa">INDUSTRIAL<span>505</span></span>
         <span class="brand-tag">Panel administrativo</span>
       </span>
     </div>
@@ -232,7 +240,7 @@
                   </div>
                   <input type="hidden" id="hero-imagen" />
                 </div>
-                <p class="hint">Déjalo vacío para conservar la ilustración por defecto del sitio.</p></div>
+                <p class="hint">Déjalo vacío para conservar el logo real de la marca que se muestra por defecto en el sitio.</p></div>
               <div class="form-grid cols-2 mt-sm">
                 <div class="form-field"><label for="hero-texto-boton">Texto botón principal</label>
                   <input class="form-input" id="hero-texto-boton" placeholder="Ver catálogo" /></div>
@@ -465,6 +473,16 @@
         </div>
 
         <div class="panel">
+          <div class="panel-head" style="border-bottom:none;margin-bottom:0;padding-bottom:0;">
+            <div>
+              <p class="text-muted" style="font-size:0.86rem;">
+                El <strong>Logo</strong> que subas aquí reemplaza automáticamente el logotipo en el encabezado
+                de <strong>index.html</strong>, <strong>catalogo.html</strong>, este panel administrativo y la
+                página de <strong>inicio de sesión</strong>. El <strong>Favicon</strong> reemplaza el ícono de
+                la pestaña del navegador en todo el sitio.
+              </p>
+            </div>
+          </div>
           <form id="configuracion-form">
             <div class="form-grid cols-2">
               <div class="form-field"><label for="config-nombre">Nombre de la empresa</label>
