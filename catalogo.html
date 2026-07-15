@@ -5,7 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Catálogo | INDUSTRIAL 505</title>
 <meta name="description" content="Catálogo completo de calzado industrial, botas de seguridad y equipo de protección personal (EPP) de INDUSTRIAL 505." />
-<link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+
+<!-- ============ ICONOS / FAVICON (logo real de la marca) ============ -->
+<link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png" />
+<link rel="icon" href="assets/favicon-192.png" sizes="192x192" type="image/png" />
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+<link rel="shortcut icon" href="assets/favicon-32.png" type="image/png" />
+
 <link rel="stylesheet" href="css/styles.css" />
 <link rel="stylesheet" href="css/catalogo.css" />
 </head>
@@ -15,13 +21,15 @@
 <header class="site-header">
   <div class="container">
     <a href="index.html" class="brand">
-      <svg class="brand-mark" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <rect x="4" y="4" width="40" height="40" rx="8" fill="#0A2342"/>
-        <path d="M24 10 34 14v8c0 8-4.3 13.5-10 17-5.7-3.5-10-9-10-17v-8l10-4Z" fill="#F5F6F8"/>
-        <path d="M24 10 34 14v8c0 8-4.3 13.5-10 17V10Z" fill="#F2A900"/>
-      </svg>
+      <img
+        class="brand-mark"
+        src="assets/logo-icon.png"
+        data-config="logo-img"
+        alt="INDUSTRIAL 505 - Calzado industrial y equipo de protección personal"
+        width="40" height="53"
+      />
       <span>
-        <span class="brand-word">INDUSTRIAL<span>505</span></span>
+        <span class="brand-word" data-config="nombre-empresa">INDUSTRIAL<span>505</span></span>
         <span class="brand-tag">Equipo &amp; Protección</span>
       </span>
     </a>
@@ -123,7 +131,7 @@
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">
-        <span class="brand-word">INDUSTRIAL<span>505</span></span>
+        <span class="brand-word" data-config="nombre-empresa">INDUSTRIAL<span>505</span></span>
         <p>Distribución de calzado industrial y equipo de protección personal certificado para tu operación.</p>
         <div class="footer-social">
           <a href="#" data-config="facebook" target="_blank" rel="noopener" aria-label="Facebook">
