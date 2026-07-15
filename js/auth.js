@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
   redirectIfAlreadyLogged();
   initPasswordToggle();
   initLoginForm();
+  loadAuthBranding();
 });
 
 /* ---------------------------------------------------------
@@ -25,6 +26,48 @@ async function redirectIfAlreadyLogged() {
     }
   } catch (err) {
     console.error("Error verificando sesión:", err);
+  }
+}
+
+/* ---------------------------------------------------------
+   Marca de la pantalla de login: logo, nombre de empresa y
+   favicon. Se lee de forma pública (sin sesión) desde la
+   tabla "configuracion", igual que en index.html. Si el
+   admin no ha subido nada aún, se conserva el logo real por
+   defecto que ya trae el HTML.
+--------------------------------------------------------- */
+async function loadAuthBranding() {
+  if (!window.supabaseClient) return;
+  try {
+    const { data: rows, error } = await window.supabaseClient
+      .from("configuracion")
+      .select("clave, valor")
+      .in("clave", ["logo_url", "nombre_empresa", "favicon_url"]);
+    if (error) throw error;
+
+    const data = {};
+    (rows || []).forEach((row) => { data[row.clave] = row.valor; });
+
+    if (data.logo_url) {
+      document.querySelectorAll("[data-config='logo-img']").forEach((el) => {
+        el.setAttribute("src", data.logo_url);
+      });
+    }
+    if (data.nombre_empresa) {
+      document.querySelectorAll("[data-config='nombre-empresa']").forEach((el) => {
+        const accentSpan = el.querySelector("span");
+        el.textContent = data.nombre_empresa;
+        if (accentSpan) el.appendChild(accentSpan);
+      });
+      document.title = document.title.replace(/INDUSTRIAL 505/, data.nombre_empresa);
+    }
+    if (data.favicon_url) {
+      document.querySelectorAll("link[rel='icon'], link[rel='shortcut icon'], link[rel='apple-touch-icon']").forEach((el) => {
+        el.setAttribute("href", data.favicon_url);
+      });
+    }
+  } catch (err) {
+    console.error("Error cargando la marca del login:", err);
   }
 }
 
