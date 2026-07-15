@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   initRouter();
   initLogout();
   await hydrateHeader();
+  await loadAdminBranding();
   await loadDashboard();
 });
 
@@ -70,6 +71,41 @@ function initSidebar() {
   toggle.addEventListener("click", open);
   overlay?.addEventListener("click", close);
   sidebar.querySelectorAll(".admin-nav-link").forEach((l) => l.addEventListener("click", close));
+}
+
+/* ---------------------------------------------------------
+   Marca del panel: logo, nombre de empresa y favicon.
+   Usa el mismo valor que ve el cliente en index.html / catalogo.html
+   (tabla "configuracion", claves logo_url / nombre_empresa / favicon_url).
+   Si aún no se ha subido nada desde Configuración, se conserva el logo
+   real por defecto que ya trae el HTML (assets/logo-icon.png).
+--------------------------------------------------------- */
+async function loadAdminBranding() {
+  if (!window.supabaseClient) return;
+  try {
+    const data = await getConfigMap(["logo_url", "nombre_empresa", "favicon_url"]);
+
+    if (data.logo_url) {
+      document.querySelectorAll("[data-config='logo-img']").forEach((el) => {
+        el.setAttribute("src", data.logo_url);
+      });
+    }
+    if (data.nombre_empresa) {
+      document.querySelectorAll("[data-config='nombre-empresa']").forEach((el) => {
+        const accentSpan = el.querySelector("span");
+        el.textContent = data.nombre_empresa;
+        if (accentSpan) el.appendChild(accentSpan);
+      });
+      document.title = document.title.replace(/^[^|]*/, `${data.nombre_empresa} `);
+    }
+    if (data.favicon_url) {
+      document.querySelectorAll("link[rel='icon'], link[rel='shortcut icon'], link[rel='apple-touch-icon']").forEach((el) => {
+        el.setAttribute("href", data.favicon_url);
+      });
+    }
+  } catch (err) {
+    console.error("Error cargando la marca del panel:", err);
+  }
 }
 
 /* ---------------------------------------------------------
@@ -1042,6 +1078,8 @@ async function saveConfiguracionModule(e) {
     });
     showToast("Configuración guardada correctamente.");
     registrarActividad("Actualizar configuración general");
+    // Refleja el cambio de inmediato en el propio sidebar del panel
+    loadAdminBranding();
   } catch (err) {
     console.error(err);
     showToast("No se pudo guardar la configuración.", "error");
