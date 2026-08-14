@@ -1272,7 +1272,12 @@ function openFormModal({ title, fields, activo, onSave, note, hideActivo, hideSa
         ${f.options.map((o) => `<option value="${o.value}" ${o.value === f.value ? "selected" : ""}>${o.label}</option>`).join("")}
       </select></div>`;
     }
-    return `<div class="form-field"><label>${f.label}</label><input class="form-input" type="${f.type || "text"}" data-field="${f.key}" value="${escapeHtml(f.value ?? "")}" placeholder="${f.placeholder || ""}" /></div>`;
+    // Para campos numéricos, "step=any" permite decimales (precios como
+    // 150.50) sin bloquear la validación nativa del navegador — antes,
+    // al no especificar "step", el navegador asumía step="1" (solo
+    // enteros) y no dejaba guardar valores con decimales.
+    const stepAttr = f.type === "number" ? ` step="${f.step || "any"}"` : "";
+    return `<div class="form-field"><label>${f.label}</label><input class="form-input" type="${f.type || "text"}" data-field="${f.key}" value="${escapeHtml(f.value ?? "")}" placeholder="${f.placeholder || ""}"${stepAttr} /></div>`;
   }).join("");
 
   box.innerHTML = `
