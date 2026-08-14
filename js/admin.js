@@ -747,35 +747,82 @@ async function loadProductosList() {
       .order("orden", { ascending: true });
     if (error) throw error;
     cacheRows("productos", data || []);
-
-    if (!data?.length) {
-      tbody.innerHTML = `<tr><td colspan="7" class="table-empty">El catálogo aún no tiene productos. Agrega el primero.</td></tr>`;
-      return;
-    }
-
-    tbody.innerHTML = data.map((p) => {
-      const disponible = p.disponible;
-      return `
-      <tr>
-        <td>${thumb(p.imagen_url)}</td>
-        <td><strong>${escapeHtml(p.nombre)}</strong>${p.sku ? `<br><span class="text-muted">SKU: ${escapeHtml(p.sku)}</span>` : ""}</td>
-        <td>${escapeHtml(p.marcas?.nombre || "—")}</td>
-        <td>${escapeHtml(p.categorias?.nombre || "—")}</td>
-        <td>${formatMoney(p.precio_descuento || p.precio)}${p.mostrar_iva ? ` <span class="badge iva">+IVA</span>` : ""}${p.precio_descuento ? `<br><span class="text-muted" style="text-decoration:line-through;">${formatMoney(p.precio)}</span>` : ""}</td>
-        <td>
-          <span class="badge ${disponible ? "on" : "off"}">${disponible ? "Disponible" : "Agotado"}</span><br>
-          ${badge(p.activo)}
-        </td>
-        <td class="row-actions">
-          ${editBtn(`openProductoModal('${p.id}')`)}
-          ${deleteBtn(`deleteRow('productos','${p.id}', loadProductosList)`)}
-        </td>
-      </tr>`;
-    }).join("");
+    renderProductosRows(data || []);
+    setupCatalogoSearch();
   } catch (err) {
     console.error(err);
     tbody.innerHTML = `<tr><td colspan="7" class="table-empty">No se pudo cargar el catálogo.</td></tr>`;
   }
+}
+
+/* Dibuja las filas de la tabla a partir de una lista ya dada — la usa
+   tanto la carga inicial como el buscador, para no repetir el HTML
+   de cada fila en dos lugares distintos. */
+function renderProductosRows(data) {
+  const tbody = document.querySelector("#tabla-productos tbody");
+  if (!tbody) return;
+
+  if (!data?.length) {
+    tbody.innerHTML = `<tr><td colspan="7" class="table-empty">El catálogo aún no tiene productos. Agrega el primero.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = data.map((p) => {
+    const disponible = p.disponible;
+    return `
+    <tr>
+      <td>${thumb(p.imagen_url)}</td>
+      <td><strong>${escapeHtml(p.nombre)}</strong>${p.sku ? `<br><span class="text-muted">SKU: ${escapeHtml(p.sku)}</span>` : ""}</td>
+      <td>${escapeHtml(p.marcas?.nombre || "—")}</td>
+      <td>${escapeHtml(p.categorias?.nombre || "—")}</td>
+      <td>${formatMoney(p.precio_descuento || p.precio)}${p.mostrar_iva ? ` <span class="badge iva">+IVA</span>` : ""}${p.precio_descuento ? `<br><span class="text-muted" style="text-decoration:line-through;">${formatMoney(p.precio)}</span>` : ""}</td>
+      <td>
+        <span class="badge ${disponible ? "on" : "off"}">${disponible ? "Disponible" : "Agotado"}</span><br>
+        ${badge(p.activo)}
+      </td>
+      <td class="row-actions">
+        ${editBtn(`openProductoModal('${p.id}')`)}
+        ${deleteBtn(`deleteRow('productos','${p.id}', loadProductosList)`)}
+      </td>
+    </tr>`;
+  }).join("");
+}
+
+/* Buscador del catálogo — filtra por nombre, SKU, marca o categoría,
+   sin volver a consultar Supabase (usa lo que ya está en memoria). El
+   listener se agrega una sola vez, con una bandera propia (igual
+   patrón que catalogoInitialized), para no duplicarlo cada recarga. */
+let catalogoSearchInitialized = false;
+function setupCatalogoSearch() {
+  const input = document.getElementById("catalogo-search-input");
+  if (!input) return;
+  actualizarContadorBusquedaCatalogo();
+  if (catalogoSearchInitialized) return;
+  catalogoSearchInitialized = true;
+  input.addEventListener("input", () => filtrarCatalogo(input.value));
+}
+
+function filtrarCatalogo(texto) {
+  const todos = rowCache["productos"] || [];
+  const q = texto.trim().toLowerCase();
+
+  const filtrados = !q ? todos : todos.filter((p) => {
+    const campos = [p.nombre, p.sku, p.marcas?.nombre, p.categorias?.nombre];
+    return campos.some((c) => (c || "").toLowerCase().includes(q));
+  });
+
+  renderProductosRows(filtrados);
+  actualizarContadorBusquedaCatalogo(filtrados.length, todos.length, q);
+}
+
+function actualizarContadorBusquedaCatalogo(mostrados, total, q) {
+  const el = document.getElementById("catalogo-search-count");
+  if (!el) return;
+  const todos = rowCache["productos"] || [];
+  if (mostrados === undefined) { el.textContent = todos.length ? `${todos.length} producto${todos.length === 1 ? "" : "s"}` : ""; return; }
+  el.textContent = q
+    ? `${mostrados} de ${total} producto${total === 1 ? "" : "s"}`
+    : `${total} producto${total === 1 ? "" : "s"}`;
 }
 
 function formatMoney(value) {
