@@ -310,6 +310,16 @@ body.admin-body {
 .panel-head h3 { font-size: 1.02rem; text-transform: uppercase; }
 .panel-head p { font-size: 0.84rem; color: var(--steel-gray); margin-top: 2px; }
 
+/* ---------- Buscador del catálogo ---------- */
+.catalogo-search-wrap {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+.catalogo-search-wrap .form-input { max-width: 360px; }
+.catalogo-search-count { font-size: 0.82rem; color: var(--steel-gray); white-space: nowrap; }
+
 /* ---------- Tabs internas (subsección "Página de Inicio") ---------- */
 .subtabs {
   display: flex;
