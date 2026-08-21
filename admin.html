@@ -61,10 +61,6 @@
 
       <div class="admin-nav-group">
         <div class="admin-nav-label">Administración</div>
-        <a href="#usuarios" class="admin-nav-link" data-view="usuarios">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0"/><path d="M16.5 8.5a3 3 0 1 1 3.2 3M20 20a5 5 0 0 0-3.5-4.8"/></svg>
-          Usuarios
-        </a>
         <a href="#configuracion" class="admin-nav-link" data-view="configuracion">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.2a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.2a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.2a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.2a1.6 1.6 0 0 0-1.5 1Z"/></svg>
           Configuración
@@ -124,9 +120,9 @@
 
         <div class="stat-grid">
           <div class="stat-card">
-            <span class="stat-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0"/></svg></span>
-            <div class="num" id="count-usuarios">—</div>
-            <div class="label">Usuarios registrados</div>
+            <span class="stat-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2 4 7v6c0 5 3.4 9 8 11 4.6-2 8-6 8-11V7l-8-5Z"/><path d="m9 12 2 2 4-4"/></svg></span>
+            <div class="num" id="count-destacados">—</div>
+            <div class="label">Productos destacados</div>
           </div>
           <div class="stat-card">
             <span class="stat-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="M2 17l10 5 10-5"/></svg></span>
@@ -180,9 +176,9 @@
             <span class="quick-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a4 4 0 0 1 8 0v2"/></svg></span>
             <span><strong>Gestionar catálogo</strong><span>Agregar y editar productos</span></span>
           </a>
-          <a class="quick-card" href="#usuarios">
-            <span class="quick-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0"/></svg></span>
-            <span><strong>Gestionar usuarios</strong><span>Roles y accesos del panel</span></span>
+          <a class="quick-card" href="#cotizaciones">
+            <span class="quick-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 3h6l3 4v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/><path d="M9 12h6M9 16h4"/></svg></span>
+            <span><strong>Ver cotizaciones</strong><span>Solicitudes recibidas por WhatsApp</span></span>
           </a>
           <a class="quick-card" href="#configuracion">
             <span class="quick-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/></svg></span>
@@ -282,7 +278,7 @@
         <div class="subview" id="subview-categorias">
           <div class="panel">
             <div class="panel-head">
-              <div><h3>Categorías del home</h3><p>Tarjetas de categorías mostradas en la página de inicio.</p></div>
+              <div><h3>Categorías de productos</h3><p>Usadas para clasificar productos en el catálogo (no se muestran en la página de inicio; la sección "Categorías" del home ahora usa las Marcas).</p></div>
               <button class="btn btn-primary btn-sm" id="add-categoria-btn" type="button">+ Agregar</button>
             </div>
             <div class="admin-table-wrap">
@@ -298,7 +294,7 @@
         <div class="subview" id="subview-marcas">
           <div class="panel">
             <div class="panel-head">
-              <div><h3>Marcas</h3><p>Marcas mostradas en el carrusel del home.</p></div>
+              <div><h3>Marcas</h3><p>Se muestran en el carrusel del home y también como tarjetas en la sección "Categorías" — al hacer clic llevan directo al catálogo filtrado por esa marca.</p></div>
               <button class="btn btn-primary btn-sm" id="add-marca-btn" type="button">+ Agregar</button>
             </div>
             <div class="admin-table-wrap">
@@ -440,33 +436,6 @@
       </section>
 
       <!-- ============ USUARIOS ============ -->
-      <section class="admin-view" id="view-usuarios">
-        <div class="view-head">
-          <div>
-            <span class="eyebrow">Accesos al panel</span>
-            <h2>Usuarios</h2>
-          </div>
-          <button class="btn btn-primary btn-sm" id="add-usuario-btn" type="button">+ Crear usuario</button>
-        </div>
-
-        <div class="panel">
-          <div class="admin-table-wrap">
-            <table class="admin-table" id="tabla-usuarios">
-              <thead><tr><th>Nombre</th><th>Correo</th><th>Rol</th><th>Estado</th><th></th></tr></thead>
-              <tbody><tr><td colspan="5" class="table-empty">Cargando…</td></tr></tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="panel" style="background:var(--off-white); border-style:dashed;">
-          <p class="text-muted">
-            Por seguridad, la creación y eliminación de usuarios de Supabase Auth se realiza desde
-            <strong>Supabase Dashboard → Authentication → Users</strong>. En cuanto un usuario se crea ahí,
-            su perfil aparece automáticamente en esta tabla para asignarle rol y estado.
-          </p>
-        </div>
-      </section>
-
       <!-- ============ CONFIGURACIÓN ============ -->
       <section class="admin-view" id="view-configuracion">
         <div class="view-head">
@@ -530,7 +499,32 @@
               <div class="form-field"><label for="config-color-safety">Acento de seguridad</label>
                 <input class="form-input" type="color" id="config-color-safety" style="height:44px;padding:4px;" /></div>
             </div>
-            <p class="hint mt-sm">Estos valores quedan guardados para uso futuro del sistema de temas. Cambiarlos aquí aún no actualiza los estilos del sitio automáticamente.</p>
+            <p class="hint mt-sm">Estos colores se aplican automáticamente en index.html, catalogo.html y este panel al guardar.</p>
+
+            <div class="panel-head mt-sm" style="margin-top:var(--space-lg);">
+              <div>
+                <h3 style="font-size:0.9rem;">SEO / Buscadores</h3>
+                <p class="text-muted" style="font-size:0.86rem;">Controla cómo se ve el sitio en Google y al compartirlo en redes sociales.</p>
+              </div>
+            </div>
+            <div class="form-grid cols-2">
+              <div class="form-field"><label for="config-seo-titulo">Título SEO</label>
+                <input class="form-input" id="config-seo-titulo" placeholder="INDUSTRIAL 505 | Calzado industrial y EPP" /></div>
+              <div class="form-field"><label for="config-seo-keywords">Palabras clave (separadas por coma)</label>
+                <input class="form-input" id="config-seo-keywords" placeholder="calzado industrial, EPP, botas de seguridad" /></div>
+              <div class="form-field full-width"><label for="config-seo-descripcion">Meta descripción</label>
+                <textarea class="form-textarea" id="config-seo-descripcion" placeholder="Distribuidor de calzado industrial y equipo de protección personal certificado."></textarea></div>
+              <div class="form-field"><label>Imagen para compartir (Open Graph)</label>
+                <div class="file-field-simple">
+                  <a class="file-preview" id="config-seo-imagen-preview" href="#" target="_blank" rel="noopener" onclick="return false;"><span class="file-preview-empty">Sin imagen</span></a>
+                  <div class="file-upload-controls">
+                    <label class="btn btn-ghost-navy btn-sm file-upload-btn">Elegir imagen<input type="file" id="config-seo-imagen-file" accept="image/*" style="display:none;" /></label>
+                    <span class="file-upload-name" id="config-seo-imagen-filename"></span>
+                  </div>
+                  <input type="hidden" id="config-seo-imagen" />
+                </div>
+              </div>
+            </div>
 
             <div class="form-actions">
               <button type="submit" class="btn btn-primary"><span class="btn-loading-dot"></span><span class="btn-label">Guardar configuración</span></button>
