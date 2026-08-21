@@ -579,7 +579,12 @@ async function loadDestacadosModule() {
     setupDestacadosSearch();
   } catch (err) {
     console.error(err);
-    tbody.innerHTML = `<tr><td colspan="5" class="table-empty">No se pudo cargar el catálogo.</td></tr>`;
+    // Error típico si aún no se ejecutó la migración SQL que agrega
+    // la columna "destacado" a la tabla "productos" en Supabase.
+    const faltaColumna = (err?.message || "").toLowerCase().includes("destacado") || err?.code === "42703";
+    tbody.innerHTML = faltaColumna
+      ? `<tr><td colspan="5" class="table-empty">Falta ejecutar la migración SQL: agrega la columna "destacado" a la tabla "productos" en Supabase (SQL Editor → migracion_productos_destacados.sql) y vuelve a intentar.</td></tr>`
+      : `<tr><td colspan="5" class="table-empty">No se pudo cargar el catálogo.</td></tr>`;
   }
 }
 
@@ -632,11 +637,24 @@ async function toggleDestacado(input) {
 
   input.disabled = true;
   try {
-    const { error } = await window.supabaseClient
+    // IMPORTANTE: se encadena .select() para que Supabase devuelva la fila
+    // actualizada. Sin esto, si una política de RLS bloquea el UPDATE,
+    // Supabase no lanza error: simplemente actualiza 0 filas en silencio
+    // y el código no se entera. Con .select(), si "data" viene vacío,
+    // sabemos con certeza que el permiso fue el problema.
+    const { data, error } = await window.supabaseClient
       .from("productos")
       .update({ destacado: input.checked })
-      .eq("id", id);
+      .eq("id", id)
+      .select("id, destacado");
     if (error) throw error;
+    if (!data || data.length === 0) {
+      throw new Error(
+        "La actualización no tuvo efecto (0 filas). Es casi seguro un problema de permisos " +
+        "(RLS) en Supabase: revisa que exista una política de UPDATE en la tabla \"productos\" " +
+        "para el rol \"authenticated\" (Dashboard → Authentication → Policies)."
+      );
+    }
     producto.destacado = input.checked;
     updateDestacadosContador();
     registrarActividad(input.checked ? "Marcar producto destacado" : "Quitar producto destacado", producto.nombre);
@@ -644,7 +662,7 @@ async function toggleDestacado(input) {
   } catch (err) {
     console.error(err);
     input.checked = !input.checked; // revierte si falló el guardado
-    showToast("No se pudo actualizar el producto.", "error");
+    showToast(err?.message ? `No se pudo actualizar: ${err.message}` : "No se pudo actualizar el producto.", "error");
   } finally {
     input.disabled = false;
   }
