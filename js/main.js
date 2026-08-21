@@ -147,12 +147,16 @@ async function loadConfiguracion() {
     correo: "contacto@industrial505.com",
     whatsapp: "50588888888",
     horario: "Lunes a Sábado, 8:00am - 6:00pm",
-    facebook_url: "#",
-    instagram_url: "#",
-    linkedin_url: "#",
     nombre_empresa: "",
     logo_url: "",
     favicon_url: "",
+    color_navy: "",
+    color_steel_blue: "",
+    color_safety: "",
+    meta_titulo: "",
+    meta_descripcion: "",
+    meta_keywords: "",
+    seo_imagen: "",
   };
 
   let data = fallback;
@@ -186,12 +190,68 @@ async function loadConfiguracion() {
   document.querySelectorAll("[data-config='whatsapp-link']").forEach((el) => el.setAttribute("href", waLink));
   document.querySelectorAll("[data-config='whatsapp-text']").forEach((el) => (el.textContent = `+${waNumber}`));
 
-  document.querySelectorAll("[data-config='facebook']").forEach((el) => el.setAttribute("href", data.facebook_url || "#"));
-  document.querySelectorAll("[data-config='instagram']").forEach((el) => el.setAttribute("href", data.instagram_url || "#"));
-  document.querySelectorAll("[data-config='linkedin']").forEach((el) => el.setAttribute("href", data.linkedin_url || "#"));
-
   applyBranding(data);
+  applyThemeColors(data);
+  applySeo(data);
   loadMapa(data.mapa_embed_url);
+}
+
+/* ---------------------------------------------------------
+   Colores institucionales: aplica en vivo lo guardado desde
+   admin.html > Configuración, sobre las variables CSS reales
+   (--navy, --steel-blue, --safety) usadas en todo el sitio.
+--------------------------------------------------------- */
+function shadeColor(hex, percent) {
+  // Oscurece (percent negativo) o aclara (positivo) un color hex.
+  if (!hex || !/^#([0-9a-f]{6})$/i.test(hex)) return hex;
+  const num = parseInt(hex.slice(1), 16);
+  const clamp = (v) => Math.max(0, Math.min(255, v));
+  const r = clamp(((num >> 16) & 0xff) + Math.round(255 * (percent / 100)));
+  const g = clamp(((num >> 8) & 0xff) + Math.round(255 * (percent / 100)));
+  const b = clamp((num & 0xff) + Math.round(255 * (percent / 100)));
+  return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
+}
+
+function applyThemeColors(data) {
+  const root = document.documentElement.style;
+  if (data.color_navy) {
+    root.setProperty("--navy", data.color_navy);
+    root.setProperty("--navy-2", shadeColor(data.color_navy, -15));
+  }
+  if (data.color_steel_blue) {
+    root.setProperty("--steel-blue", data.color_steel_blue);
+    root.setProperty("--steel-blue-2", shadeColor(data.color_steel_blue, 12));
+  }
+  if (data.color_safety) {
+    root.setProperty("--safety", data.color_safety);
+    root.setProperty("--safety-dark", shadeColor(data.color_safety, -15));
+  }
+}
+
+/* ---------------------------------------------------------
+   SEO: título, meta descripción, palabras clave e imagen para
+   compartir (Open Graph), editables desde admin.html > Configuración.
+   Si no hay datos guardados, se conserva el <title> y las meta
+   etiquetas originales del HTML.
+--------------------------------------------------------- */
+function setMetaTag(attr, key, content) {
+  if (!content) return;
+  let tag = document.querySelector(`meta[${attr}='${key}']`);
+  if (!tag) {
+    tag = document.createElement("meta");
+    tag.setAttribute(attr, key);
+    document.head.appendChild(tag);
+  }
+  tag.setAttribute("content", content);
+}
+
+function applySeo(data) {
+  if (data.meta_titulo) document.title = data.meta_titulo;
+  if (data.meta_descripcion) setMetaTag("name", "description", data.meta_descripcion);
+  if (data.meta_keywords) setMetaTag("name", "keywords", data.meta_keywords);
+  setMetaTag("property", "og:title", data.meta_titulo);
+  setMetaTag("property", "og:description", data.meta_descripcion);
+  setMetaTag("property", "og:image", data.seo_imagen);
 }
 
 /* ---------------------------------------------------------
@@ -214,7 +274,10 @@ function loadMapa(mapaUrl) {
 }
 
 /* ---------------------------------------------------------
-   Categorías
+   Categorías (muestra las MARCAS activas registradas en el
+   sistema — tabla "marcas" — y cada tarjeta lleva directo al
+   catálogo ya filtrado por esa marca).
+   Editable desde admin.html > Página de Inicio > Marcas.
 --------------------------------------------------------- */
 const categoryIcon = `
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -226,38 +289,38 @@ async function loadCategorias() {
   if (!grid) return;
 
   if (!window.supabaseClient) {
-    renderEmptyState(grid, "Conecta Supabase para mostrar las categorías.");
+    renderEmptyState(grid, "Conecta Supabase para mostrar las marcas.");
     return;
   }
 
   try {
     const { data, error } = await supabaseClient
-      .from("categorias")
+      .from("marcas")
       .select("*")
       .eq("activo", true)
       .order("orden", { ascending: true });
     if (error) throw error;
 
     if (!data || data.length === 0) {
-      renderEmptyState(grid, "Aún no hay categorías registradas.");
+      renderEmptyState(grid, "Aún no hay marcas registradas.");
       return;
     }
 
     grid.innerHTML = data
       .map(
-        (cat, i) => `
-      <a href="catalogo.html?categoria=${encodeURIComponent(cat.slug || cat.id)}" class="category-card reveal" style="transition-delay:${i * 40}ms">
+        (marca, i) => `
+      <a href="catalogo.html?marca=${encodeURIComponent(marca.id)}" class="category-card reveal" style="transition-delay:${i * 40}ms">
         <span class="category-icon">
-          ${cat.imagen_url ? `<img src="${escapeHtml(cat.imagen_url)}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" />` : categoryIcon}
+          ${marca.logo_url ? `<img src="${escapeHtml(marca.logo_url)}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" />` : categoryIcon}
         </span>
-        <span class="category-name">${escapeHtml(cat.nombre)}</span>
+        <span class="category-name">${escapeHtml(marca.nombre)}</span>
       </a>`
       )
       .join("");
     markObserved(grid);
   } catch (err) {
-    console.error("Error cargando categorías:", err);
-    renderEmptyState(grid, "No se pudieron cargar las categorías.");
+    console.error("Error cargando marcas:", err);
+    renderEmptyState(grid, "No se pudieron cargar las marcas.");
   }
 }
 
@@ -280,7 +343,7 @@ async function loadProductosDestacados() {
 
   try {
     const { data, error } = await supabaseClient
-      .from("productos_destacados")
+      .from("productos")
       .select("*")
       .eq("activo", true)
       .eq("destacado", true)
