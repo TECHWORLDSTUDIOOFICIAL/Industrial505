@@ -75,7 +75,13 @@ function initRevealOnScroll() {
 }
 
 async function loadConfiguracion() {
-  const fallback = { whatsapp: "50588888888", correo: "contacto@industrial505.com", facebook_url: "#", instagram_url: "#", linkedin_url: "#" };
+  const fallback = {
+    whatsapp: "50588888888",
+    correo: "contacto@industrial505.com",
+    facebook_url: "#", instagram_url: "#", linkedin_url: "#",
+    color_navy: "", color_steel_blue: "", color_safety: "",
+    meta_titulo: "", meta_descripcion: "", meta_keywords: "", seo_imagen: "",
+  };
   let data = fallback;
   if (window.supabaseClient) {
     try {
@@ -110,7 +116,60 @@ async function loadConfiguracion() {
     });
   }
 
+  applyThemeColors(data);
+  applySeo(data);
+
   document.getElementById("year") && (document.getElementById("year").textContent = new Date().getFullYear());
+}
+
+/* ---------------------------------------------------------
+   Colores institucionales y SEO (mismos helpers que index.html,
+   duplicados aquí porque catalogo.js corre de forma independiente).
+--------------------------------------------------------- */
+function shadeColor(hex, percent) {
+  if (!hex || !/^#([0-9a-f]{6})$/i.test(hex)) return hex;
+  const num = parseInt(hex.slice(1), 16);
+  const clamp = (v) => Math.max(0, Math.min(255, v));
+  const r = clamp(((num >> 16) & 0xff) + Math.round(255 * (percent / 100)));
+  const g = clamp(((num >> 8) & 0xff) + Math.round(255 * (percent / 100)));
+  const b = clamp((num & 0xff) + Math.round(255 * (percent / 100)));
+  return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
+}
+
+function applyThemeColors(data) {
+  const root = document.documentElement.style;
+  if (data.color_navy) {
+    root.setProperty("--navy", data.color_navy);
+    root.setProperty("--navy-2", shadeColor(data.color_navy, -15));
+  }
+  if (data.color_steel_blue) {
+    root.setProperty("--steel-blue", data.color_steel_blue);
+    root.setProperty("--steel-blue-2", shadeColor(data.color_steel_blue, 12));
+  }
+  if (data.color_safety) {
+    root.setProperty("--safety", data.color_safety);
+    root.setProperty("--safety-dark", shadeColor(data.color_safety, -15));
+  }
+}
+
+function setMetaTag(attr, key, content) {
+  if (!content) return;
+  let tag = document.querySelector(`meta[${attr}='${key}']`);
+  if (!tag) {
+    tag = document.createElement("meta");
+    tag.setAttribute(attr, key);
+    document.head.appendChild(tag);
+  }
+  tag.setAttribute("content", content);
+}
+
+function applySeo(data) {
+  if (data.meta_titulo) document.title = `Catálogo | ${data.meta_titulo}`;
+  if (data.meta_descripcion) setMetaTag("name", "description", data.meta_descripcion);
+  if (data.meta_keywords) setMetaTag("name", "keywords", data.meta_keywords);
+  setMetaTag("property", "og:title", data.meta_titulo);
+  setMetaTag("property", "og:description", data.meta_descripcion);
+  setMetaTag("property", "og:image", data.seo_imagen);
 }
 
 /* ---------------------------------------------------------
@@ -146,6 +205,7 @@ async function loadProductos() {
   const grid = document.getElementById("catalog-grid");
   const params = new URLSearchParams(window.location.search);
   const productoParam = params.get("producto");
+  const marcaParam = params.get("marca");
 
   if (!window.supabaseClient) {
     renderEmpty(grid, "Conecta Supabase para mostrar el catálogo.", "Configura js/supabase-config.js con tu proyecto.");
@@ -162,6 +222,17 @@ async function loadProductos() {
 
     allProducts = data || [];
     buildBrandFilters(allProducts);
+
+    // Si se llega desde la página de inicio con ?marca=<id> (tarjeta de
+    // "Categorías" en el home), preselecciona ese filtro de marca.
+    if (marcaParam) {
+      const chip = document.querySelector(`.filter-chip[data-brand="${CSS.escape(marcaParam)}"]`);
+      if (chip) {
+        chip.classList.add("is-active");
+        activeBrandFilter = marcaParam;
+      }
+    }
+
     applyFiltersAndRender();
 
     if (productoParam) {
