@@ -199,7 +199,7 @@
         <div class="subtabs">
           <button class="subtab-btn is-active" data-subtab="hero" type="button">Hero</button>
           <button class="subtab-btn" data-subtab="estadisticas" type="button">Estadísticas</button>
-          <button class="subtab-btn" data-subtab="categorias" type="button">Categorías</button>
+          <button class="subtab-btn" data-subtab="destacados" type="button">Destacados</button>
           <button class="subtab-btn" data-subtab="marcas" type="button">Marcas</button>
           <button class="subtab-btn" data-subtab="beneficios" type="button">Beneficios</button>
           <button class="subtab-btn" data-subtab="contacto" type="button">Contacto</button>
@@ -274,16 +274,23 @@
           </div>
         </div>
 
-        <!-- Subvista: Categorías -->
-        <div class="subview" id="subview-categorias">
+        <!-- Subvista: Productos destacados -->
+        <div class="subview" id="subview-destacados">
           <div class="panel">
             <div class="panel-head">
-              <div><h3>Categorías de productos</h3><p>Usadas para clasificar productos en el catálogo (no se muestran en la página de inicio; la sección "Categorías" del home ahora usa las Marcas).</p></div>
-              <button class="btn btn-primary btn-sm" id="add-categoria-btn" type="button">+ Agregar</button>
+              <div>
+                <h3>Productos destacados</h3>
+                <p>Elige hasta <strong>5 productos</strong> del catálogo para mostrarlos en la sección "Productos destacados" de la página de inicio.</p>
+              </div>
+              <span class="badge" id="destacados-contador" style="white-space:nowrap;">0 / 5</span>
             </div>
             <div class="admin-table-wrap">
-              <table class="admin-table" id="tabla-categorias">
-                <thead><tr><th>Imagen</th><th>Nombre</th><th>Orden</th><th>Estado</th><th></th></tr></thead>
+              <div class="catalogo-search-wrap" style="margin-bottom:var(--space-md);">
+                <input type="text" class="form-input" id="destacados-search-input" placeholder="Buscar producto por nombre, SKU o marca…" autocomplete="off" />
+                <span class="catalogo-search-count" id="destacados-search-count"></span>
+              </div>
+              <table class="admin-table" id="tabla-destacados">
+                <thead><tr><th>Imagen</th><th>Producto</th><th>Marca</th><th>Precio</th><th>Destacado</th></tr></thead>
                 <tbody><tr><td colspan="5" class="table-empty">Cargando…</td></tr></tbody>
               </table>
             </div>
