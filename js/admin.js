@@ -602,16 +602,11 @@ function renderDestacadosRows(data) {
       <td>${escapeHtml(p.marcas?.nombre || "—")}</td>
       <td>${formatMoney(p.precio_descuento || p.precio)}</td>
       <td>
-        <span class="switch">
-          <input type="checkbox" data-destacado-toggle="${p.id}" ${p.destacado ? "checked" : ""} />
-          <span class="track"></span><span class="thumb"></span>
-        </span>
+        <button type="button" class="btn btn-sm ${p.destacado ? "btn-primary" : "btn-ghost-navy"}" onclick="toggleDestacado('${p.id}')">
+          ${p.destacado ? "★ Destacado" : "☆ Destacar"}
+        </button>
       </td>
     </tr>`).join("");
-
-  tbody.querySelectorAll("[data-destacado-toggle]").forEach((input) => {
-    input.addEventListener("change", () => toggleDestacado(input));
-  });
 }
 
 function updateDestacadosContador() {
@@ -622,20 +617,18 @@ function updateDestacadosContador() {
   el.style.color = total >= 5 ? "var(--safety-dark)" : "";
 }
 
-async function toggleDestacado(input) {
-  const id = input.dataset.destacadoToggle;
+async function toggleDestacado(id) {
   const producto = destacadosProductos.find((p) => p.id === id);
   if (!producto) return;
 
+  const nuevoValor = !producto.destacado;
   const activosActuales = destacadosProductos.filter((p) => p.destacado).length;
 
-  if (input.checked && activosActuales >= 5) {
-    input.checked = false; // revierte el clic: ya hay 5 activos
+  if (nuevoValor && activosActuales >= 5) {
     showToast("Ya tienes 5 productos destacados. Quita uno para agregar otro.", "error");
     return;
   }
 
-  input.disabled = true;
   try {
     // IMPORTANTE: se encadena .select() para que Supabase devuelva la fila
     // actualizada. Sin esto, si una política de RLS bloquea el UPDATE,
@@ -644,7 +637,7 @@ async function toggleDestacado(input) {
     // sabemos con certeza que el permiso fue el problema.
     const { data, error } = await window.supabaseClient
       .from("productos")
-      .update({ destacado: input.checked })
+      .update({ destacado: nuevoValor })
       .eq("id", id)
       .select("id, destacado");
     if (error) throw error;
@@ -655,18 +648,17 @@ async function toggleDestacado(input) {
         "para el rol \"authenticated\" (Dashboard → Authentication → Policies)."
       );
     }
-    producto.destacado = input.checked;
+    producto.destacado = nuevoValor;
     updateDestacadosContador();
-    registrarActividad(input.checked ? "Marcar producto destacado" : "Quitar producto destacado", producto.nombre);
-    showToast(input.checked ? `"${producto.nombre}" agregado a destacados.` : `"${producto.nombre}" quitado de destacados.`);
+    filtrarDestacados(document.getElementById("destacados-search-input")?.value || "");
+    registrarActividad(nuevoValor ? "Marcar producto destacado" : "Quitar producto destacado", producto.nombre);
+    showToast(nuevoValor ? `"${producto.nombre}" agregado a destacados.` : `"${producto.nombre}" quitado de destacados.`);
   } catch (err) {
     console.error(err);
-    input.checked = !input.checked; // revierte si falló el guardado
     showToast(err?.message ? `No se pudo actualizar: ${err.message}` : "No se pudo actualizar el producto.", "error");
-  } finally {
-    input.disabled = false;
   }
 }
+window.toggleDestacado = toggleDestacado;
 
 function setupDestacadosSearch() {
   const input = document.getElementById("destacados-search-input");
