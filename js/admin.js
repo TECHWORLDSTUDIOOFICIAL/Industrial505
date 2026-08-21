@@ -83,7 +83,7 @@ function initSidebar() {
 async function loadAdminBranding() {
   if (!window.supabaseClient) return;
   try {
-    const data = await getConfigMap(["logo_url", "nombre_empresa", "favicon_url"]);
+    const data = await getConfigMap(["logo_url", "nombre_empresa", "favicon_url", "color_navy", "color_steel_blue", "color_safety"]);
 
     if (data.logo_url) {
       document.querySelectorAll("[data-config='logo-img']").forEach((el) => {
@@ -103,8 +103,41 @@ async function loadAdminBranding() {
         el.setAttribute("href", data.favicon_url);
       });
     }
+    applyThemeColors(data);
   } catch (err) {
     console.error("Error cargando la marca del panel:", err);
+  }
+}
+
+/* ---------------------------------------------------------
+   Colores institucionales: aplica en vivo lo guardado desde
+   Configuración sobre las variables CSS reales (--navy,
+   --steel-blue, --safety), tanto en el propio panel como
+   —vía main.js / catalogo.js— en index.html y catalogo.html.
+--------------------------------------------------------- */
+function shadeColor(hex, percent) {
+  if (!hex || !/^#([0-9a-f]{6})$/i.test(hex)) return hex;
+  const num = parseInt(hex.slice(1), 16);
+  const clamp = (v) => Math.max(0, Math.min(255, v));
+  const r = clamp(((num >> 16) & 0xff) + Math.round(255 * (percent / 100)));
+  const g = clamp(((num >> 8) & 0xff) + Math.round(255 * (percent / 100)));
+  const b = clamp((num & 0xff) + Math.round(255 * (percent / 100)));
+  return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
+}
+
+function applyThemeColors(data) {
+  const root = document.documentElement.style;
+  if (data.color_navy) {
+    root.setProperty("--navy", data.color_navy);
+    root.setProperty("--navy-2", shadeColor(data.color_navy, -15));
+  }
+  if (data.color_steel_blue) {
+    root.setProperty("--steel-blue", data.color_steel_blue);
+    root.setProperty("--steel-blue-2", shadeColor(data.color_steel_blue, 12));
+  }
+  if (data.color_safety) {
+    root.setProperty("--safety", data.color_safety);
+    root.setProperty("--safety-dark", shadeColor(data.color_safety, -15));
   }
 }
 
@@ -116,7 +149,6 @@ const VIEW_TITLES = {
   inicio:       { title: "Página de inicio",   desc: "Administra todo el contenido del home." },
   catalogo:     { title: "Catálogo",           desc: "Gestión de productos del catálogo." },
   cotizaciones: { title: "Cotizaciones",       desc: "Solicitudes de cotización recibidas." },
-  usuarios:     { title: "Usuarios",           desc: "Administradores con acceso al panel." },
   configuracion:{ title: "Configuración",      desc: "Datos generales de la empresa." },
   perfil:       { title: "Mi perfil",          desc: "Tu información personal de acceso." },
 };
@@ -146,7 +178,6 @@ function renderRoute() {
   if (view === "inicio") loadInicioModule();
   if (view === "catalogo") loadCatalogoModule();
   if (view === "cotizaciones") loadCotizacionesModule();
-  if (view === "usuarios") loadUsuarios();
   if (view === "configuracion") loadConfiguracionModule();
   if (view === "perfil") loadPerfilModule();
 }
@@ -287,7 +318,6 @@ async function resolveFileUpload(fileInputId, hiddenInputId, bucket, folder) {
    ========================================================= */
 async function loadDashboard() {
   const counters = [
-    { table: "perfiles",              el: "count-usuarios" },
     { table: "marcas",                el: "count-marcas" },
     { table: "categorias",            el: "count-categorias" },
     { table: "banners",               el: "count-banners" },
@@ -304,6 +334,17 @@ async function loadDashboard() {
     } catch (err) {
       document.getElementById(c.el).textContent = "—";
     }
+  }
+
+  try {
+    const { count, error } = await window.supabaseClient
+      .from("productos")
+      .select("*", { count: "exact", head: true })
+      .eq("destacado", true);
+    if (error) throw error;
+    document.getElementById("count-destacados").textContent = count ?? 0;
+  } catch (err) {
+    document.getElementById("count-destacados").textContent = "—";
   }
 
   try {
@@ -357,7 +398,7 @@ function loadInicioModule() {
 
   loadHeroForm();
   loadEstadisticasList();
-  loadCategoriasList();
+  loadDestacadosModule();
   loadMarcasList();
   loadBeneficiosList();
   loadContactoForm();
@@ -368,7 +409,6 @@ function loadInicioModule() {
   document.getElementById("contacto-form")?.addEventListener("submit", saveContacto);
   document.getElementById("footer-form")?.addEventListener("submit", saveFooter);
   document.getElementById("add-estadistica-btn")?.addEventListener("click", () => openEstadisticaModal());
-  document.getElementById("add-categoria-btn")?.addEventListener("click", () => openCategoriaModal());
   document.getElementById("add-marca-btn")?.addEventListener("click", () => openMarcaModal());
   document.getElementById("add-beneficio-btn")?.addEventListener("click", () => openBeneficioModal());
 }
@@ -515,52 +555,128 @@ function openEstadisticaModal(id) {
   });
 }
 
-/* ---------- Categorías ---------- */
-async function loadCategoriasList() {
-  const tbody = document.querySelector("#tabla-categorias tbody");
+/* ---------- Productos destacados (máx. 5) ----------
+   Selector rápido: lista los productos del catálogo con un
+   interruptor "Destacado" por fila. No usa el modal genérico
+   porque el cambio debe reflejarse al instante (un clic = un
+   guardado), y porque hay que validar el límite de 5 antes de
+   permitir activar uno nuevo. */
+let destacadosProductos = [];
+let destacadosSearchInitialized = false;
+
+async function loadDestacadosModule() {
+  const tbody = document.querySelector("#tabla-destacados tbody");
   if (!tbody) return;
   try {
     const { data, error } = await window.supabaseClient
-      .from("categorias").select("*").order("orden", { ascending: true });
+      .from("productos")
+      .select("id, nombre, sku, precio, precio_descuento, imagen_url, destacado, marcas(nombre)")
+      .order("nombre", { ascending: true });
     if (error) throw error;
-    cacheRows("categorias", data || []);
-    if (!data?.length) { tbody.innerHTML = `<tr><td colspan="5" class="table-empty">Sin categorías. Agrega la primera.</td></tr>`; return; }
-    tbody.innerHTML = data.map((r) => `
-      <tr>
-        <td>${thumb(r.imagen_url)}</td>
-        <td><strong>${escapeHtml(r.nombre)}</strong><br><span class="text-muted">${escapeHtml(r.slug || "")}</span></td>
-        <td>${r.orden}</td>
-        <td>${badge(r.activo)}</td>
-        <td class="row-actions">
-          ${editBtn(`openCategoriaModal('${r.id}')`)}
-          ${deleteBtn(`deleteRow('categorias','${r.id}', loadCategoriasList)`)}
-        </td>
-      </tr>`).join("");
+    destacadosProductos = data || [];
+    renderDestacadosRows(destacadosProductos);
+    updateDestacadosContador();
+    setupDestacadosSearch();
   } catch (err) {
     console.error(err);
-    tbody.innerHTML = `<tr><td colspan="5" class="table-empty">No se pudieron cargar las categorías.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="5" class="table-empty">No se pudo cargar el catálogo.</td></tr>`;
   }
 }
 
-function openCategoriaModal(id) {
-  const row = id ? findCached("categorias", id) : null;
-  openFormModal({
-    title: id ? "Editar categoría" : "Nueva categoría",
-    fields: [
-      { key: "nombre", label: "Nombre", value: row?.nombre, placeholder: "Cascos" },
-      { key: "slug", label: "Slug (URL)", value: row?.slug, placeholder: "cascos" },
-      { key: "imagen_url", label: "Imagen", value: row?.imagen_url, type: "file", accept: "image/*", bucket: "imagenes", folder: "categorias" },
-      { key: "orden", label: "Orden", value: row?.orden ?? 0, type: "number" },
-    ],
-    activo: row?.activo ?? true,
-    onSave: async (values) => {
-      const payload = { nombre: values.nombre, slug: values.slug, imagen_url: values.imagen_url, orden: Number(values.orden) || 0, activo: values.activo };
-      if (id) await window.supabaseClient.from("categorias").update(payload).eq("id", id);
-      else await window.supabaseClient.from("categorias").insert(payload);
-      registrarActividad(id ? "Editar categoría" : "Crear categoría", values.nombre);
-      loadCategoriasList();
-    },
+function renderDestacadosRows(data) {
+  const tbody = document.querySelector("#tabla-destacados tbody");
+  if (!tbody) return;
+  if (!data?.length) {
+    tbody.innerHTML = `<tr><td colspan="5" class="table-empty">El catálogo aún no tiene productos.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = data.map((p) => `
+    <tr>
+      <td>${thumb(p.imagen_url)}</td>
+      <td><strong>${escapeHtml(p.nombre)}</strong>${p.sku ? `<br><span class="text-muted">SKU: ${escapeHtml(p.sku)}</span>` : ""}</td>
+      <td>${escapeHtml(p.marcas?.nombre || "—")}</td>
+      <td>${formatMoney(p.precio_descuento || p.precio)}</td>
+      <td>
+        <span class="switch">
+          <input type="checkbox" data-destacado-toggle="${p.id}" ${p.destacado ? "checked" : ""} />
+          <span class="track"></span><span class="thumb"></span>
+        </span>
+      </td>
+    </tr>`).join("");
+
+  tbody.querySelectorAll("[data-destacado-toggle]").forEach((input) => {
+    input.addEventListener("change", () => toggleDestacado(input));
   });
+}
+
+function updateDestacadosContador() {
+  const el = document.getElementById("destacados-contador");
+  if (!el) return;
+  const total = destacadosProductos.filter((p) => p.destacado).length;
+  el.textContent = `${total} / 5`;
+  el.style.color = total >= 5 ? "var(--safety-dark)" : "";
+}
+
+async function toggleDestacado(input) {
+  const id = input.dataset.destacadoToggle;
+  const producto = destacadosProductos.find((p) => p.id === id);
+  if (!producto) return;
+
+  const activosActuales = destacadosProductos.filter((p) => p.destacado).length;
+
+  if (input.checked && activosActuales >= 5) {
+    input.checked = false; // revierte el clic: ya hay 5 activos
+    showToast("Ya tienes 5 productos destacados. Quita uno para agregar otro.", "error");
+    return;
+  }
+
+  input.disabled = true;
+  try {
+    const { error } = await window.supabaseClient
+      .from("productos")
+      .update({ destacado: input.checked })
+      .eq("id", id);
+    if (error) throw error;
+    producto.destacado = input.checked;
+    updateDestacadosContador();
+    registrarActividad(input.checked ? "Marcar producto destacado" : "Quitar producto destacado", producto.nombre);
+    showToast(input.checked ? `"${producto.nombre}" agregado a destacados.` : `"${producto.nombre}" quitado de destacados.`);
+  } catch (err) {
+    console.error(err);
+    input.checked = !input.checked; // revierte si falló el guardado
+    showToast("No se pudo actualizar el producto.", "error");
+  } finally {
+    input.disabled = false;
+  }
+}
+
+function setupDestacadosSearch() {
+  const input = document.getElementById("destacados-search-input");
+  if (!input) return;
+  actualizarContadorBusquedaDestacados();
+  if (destacadosSearchInitialized) return;
+  destacadosSearchInitialized = true;
+  input.addEventListener("input", () => filtrarDestacados(input.value));
+}
+
+function filtrarDestacados(texto) {
+  const q = texto.trim().toLowerCase();
+  const filtrados = !q ? destacadosProductos : destacadosProductos.filter((p) => {
+    const campos = [p.nombre, p.sku, p.marcas?.nombre];
+    return campos.some((c) => (c || "").toLowerCase().includes(q));
+  });
+  renderDestacadosRows(filtrados);
+  actualizarContadorBusquedaDestacados(filtrados.length, destacadosProductos.length, q);
+}
+
+function actualizarContadorBusquedaDestacados(mostrados, total, q) {
+  const el = document.getElementById("destacados-search-count");
+  if (!el) return;
+  const todos = destacadosProductos.length;
+  if (mostrados === undefined) { el.textContent = todos ? `${todos} producto${todos === 1 ? "" : "s"}` : ""; return; }
+  el.textContent = q
+    ? `${mostrados} de ${total} producto${total === 1 ? "" : "s"}`
+    : `${total} producto${total === 1 ? "" : "s"}`;
 }
 
 /* ---------- Marcas ---------- */
@@ -779,6 +895,7 @@ function renderProductosRows(data) {
       <td>
         <span class="badge ${disponible ? "on" : "off"}">${disponible ? "Disponible" : "Agotado"}</span><br>
         ${badge(p.activo)}
+        ${p.destacado ? `<br><span class="badge" style="background:rgba(242,169,0,0.14);color:var(--safety-dark);">★ Destacado</span>` : ""}
       </td>
       <td class="row-actions">
         ${editBtn(`openProductoModal('${p.id}')`)}
@@ -1014,75 +1131,18 @@ function viewBtn(onclick) {
 }
 
 /* =========================================================
-   MÓDULO: USUARIOS
-   ========================================================= */
-async function loadUsuarios() {
-  const tbody = document.querySelector("#tabla-usuarios tbody");
-  if (!tbody) return;
-  try {
-    const { data, error } = await window.supabaseClient
-      .from("perfiles").select("*").order("created_at", { ascending: true });
-    if (error) throw error;
-    cacheRows("perfiles", data || []);
-    if (!data?.length) { tbody.innerHTML = `<tr><td colspan="5" class="table-empty">Aún no hay perfiles. Crea el usuario desde Supabase Dashboard.</td></tr>`; return; }
-    tbody.innerHTML = data.map((r) => `
-      <tr>
-        <td><strong>${escapeHtml(r.nombre || "—")}</strong></td>
-        <td>${escapeHtml(r.correo || "—")}</td>
-        <td><span class="badge ${r.rol === "administrador" ? "role-admin" : "role-editor"}">${escapeHtml(r.rol)}</span></td>
-        <td>${badge(r.activo)}</td>
-        <td class="row-actions">
-          ${editBtn(`openUsuarioModal('${r.id}')`)}
-          ${deleteBtn(`deleteRow('perfiles','${r.id}', loadUsuarios)`, "Eliminar perfil")}
-        </td>
-      </tr>`).join("");
-  } catch (err) {
-    console.error(err);
-    tbody.innerHTML = `<tr><td colspan="5" class="table-empty">No se pudieron cargar los usuarios.</td></tr>`;
-  }
-}
-
-function openUsuarioModal(id) {
-  const row = findCached("perfiles", id);
-  if (!row) return;
-  openFormModal({
-    title: "Editar usuario",
-    note: "Este usuario ya existe en Supabase Auth. Aquí solo editas su nombre y rol dentro del panel.",
-    fields: [
-      { key: "nombre", label: "Nombre", value: row.nombre },
-      { key: "rol", label: "Rol", value: row.rol, type: "select", options: [
-        { value: "administrador", label: "Administrador" },
-        { value: "editor", label: "Editor" },
-      ]},
-    ],
-    activo: row.activo,
-    onSave: async (values) => {
-      const payload = { nombre: values.nombre, rol: values.rol, activo: values.activo };
-      const { error } = await window.supabaseClient.from("perfiles").update(payload).eq("id", id);
-      if (error) throw error;
-      registrarActividad("Editar usuario", values.nombre);
-      loadUsuarios();
-    },
-  });
-}
-
-document.getElementById("add-usuario-btn")?.addEventListener("click", () => {
-  openFormModal({
-    title: "Crear usuario administrador",
-    note: "Por seguridad, Supabase no permite crear usuarios de Auth desde el navegador. Crea el usuario en Supabase Dashboard → Authentication → Users; su perfil aparecerá aquí automáticamente para que le asignes rol.",
-    fields: [],
-    hideActivo: true,
-    hideSave: true,
-  });
-});
-
-/* =========================================================
    MÓDULO: CONFIGURACIÓN GENERAL
    ========================================================= */
 let configuracionInitialized = false;
 
+const CONFIG_KEYS = [
+  "nombre_empresa", "logo_url", "favicon_url", "correo", "whatsapp", "direccion",
+  "color_navy", "color_steel_blue", "color_safety",
+  "meta_titulo", "meta_descripcion", "meta_keywords", "seo_imagen",
+];
+
 async function loadConfiguracionModule() {
-  const data = await getConfigMap(["nombre_empresa", "logo_url", "favicon_url", "correo", "whatsapp", "direccion", "color_navy", "color_steel_blue", "color_safety"]);
+  const data = await getConfigMap(CONFIG_KEYS);
   document.getElementById("config-nombre").value = data.nombre_empresa || "";
   document.getElementById("config-logo").value = data.logo_url || "";
   setFilePreview("config-logo-preview", data.logo_url);
@@ -1094,9 +1154,15 @@ async function loadConfiguracionModule() {
   document.getElementById("config-color-navy").value = data.color_navy || "#0A2342";
   document.getElementById("config-color-blue").value = data.color_steel_blue || "#1D4E89";
   document.getElementById("config-color-safety").value = data.color_safety || "#F2A900";
+  document.getElementById("config-seo-titulo").value = data.meta_titulo || "";
+  document.getElementById("config-seo-keywords").value = data.meta_keywords || "";
+  document.getElementById("config-seo-descripcion").value = data.meta_descripcion || "";
+  document.getElementById("config-seo-imagen").value = data.seo_imagen || "";
+  setFilePreview("config-seo-imagen-preview", data.seo_imagen);
 
   wireFileInputPreview("config-logo-file", "config-logo-preview", "config-logo-filename");
   wireFileInputPreview("config-favicon-file", "config-favicon-preview", "config-favicon-filename");
+  wireFileInputPreview("config-seo-imagen-file", "config-seo-imagen-preview", "config-seo-imagen-filename");
 
   if (!configuracionInitialized) {
     configuracionInitialized = true;
@@ -1111,8 +1177,9 @@ async function saveConfiguracionModule(e) {
   try {
     await resolveFileUpload("config-logo-file", "config-logo", "imagenes", "marca");
     await resolveFileUpload("config-favicon-file", "config-favicon", "imagenes", "marca");
+    await resolveFileUpload("config-seo-imagen-file", "config-seo-imagen", "imagenes", "seo");
 
-    await setConfigMap({
+    const nuevaConfig = {
       nombre_empresa: document.getElementById("config-nombre").value.trim(),
       logo_url: document.getElementById("config-logo").value.trim(),
       favicon_url: document.getElementById("config-favicon").value.trim(),
@@ -1122,11 +1189,18 @@ async function saveConfiguracionModule(e) {
       color_navy: document.getElementById("config-color-navy").value.trim(),
       color_steel_blue: document.getElementById("config-color-blue").value.trim(),
       color_safety: document.getElementById("config-color-safety").value.trim(),
-    });
-    showToast("Configuración guardada correctamente.");
+      meta_titulo: document.getElementById("config-seo-titulo").value.trim(),
+      meta_keywords: document.getElementById("config-seo-keywords").value.trim(),
+      meta_descripcion: document.getElementById("config-seo-descripcion").value.trim(),
+      seo_imagen: document.getElementById("config-seo-imagen").value.trim(),
+    };
+
+    await setConfigMap(nuevaConfig);
+    showToast("Configuración guardada correctamente. Los cambios ya están activos en el sitio.");
     registrarActividad("Actualizar configuración general");
-    // Refleja el cambio de inmediato en el propio sidebar del panel
+    // Refleja el cambio de inmediato en el propio panel (logo, nombre, colores)
     loadAdminBranding();
+    applyThemeColors(nuevaConfig);
   } catch (err) {
     console.error(err);
     showToast("No se pudo guardar la configuración.", "error");
@@ -1262,10 +1336,8 @@ async function deleteRow(table, id, refreshFn) {
 }
 window.deleteRow = deleteRow;
 window.openEstadisticaModal = openEstadisticaModal;
-window.openCategoriaModal = openCategoriaModal;
 window.openMarcaModal = openMarcaModal;
 window.openBeneficioModal = openBeneficioModal;
-window.openUsuarioModal = openUsuarioModal;
 window.openProductoModal = openProductoModal;
 window.openCotizacionModal = openCotizacionModal;
 
