@@ -60,7 +60,7 @@
   position: absolute;
   top: calc(100% + 8px);
   left: 0; right: 0;
-  background: var(--white);
+  background: var(--surface);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-lg);
   overflow-y: auto;
@@ -96,9 +96,9 @@
   color: var(--steel-gray-light);
 }
 .suggestion-text { flex: 1; min-width: 0; }
-.suggestion-text .name { font-size: 0.87rem; font-weight: 700; color: var(--navy); }
+.suggestion-text .name { font-size: 0.87rem; font-weight: 700; color: var(--heading); }
 .suggestion-text .meta { font-size: 0.76rem; color: var(--steel-gray); }
-.suggestion-price { font-family: var(--font-display); font-size: 0.85rem; color: var(--navy); flex-shrink: 0; }
+.suggestion-price { font-family: var(--font-display); font-size: 0.85rem; color: var(--heading); flex-shrink: 0; }
 .suggestion-empty { padding: 16px; text-align: center; color: var(--steel-gray); font-size: 0.85rem; }
 
 /* ---------- Barra de filtros ---------- */
@@ -106,7 +106,7 @@
   position: sticky;
   top: var(--header-h);
   z-index: 40;
-  background: var(--white);
+  background: var(--surface);
   border-bottom: 1px solid var(--fog);
   padding-block: var(--space-sm);
 }
@@ -124,7 +124,7 @@
 .filter-select {
   padding: 0.55rem 2.1rem 0.55rem 0.85rem;
   font-size: 0.85rem;
-  color: var(--navy);
+  color: var(--heading);
   background: var(--off-white) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%235C6670" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>') no-repeat right 0.6rem center / 14px;
   border: 1.5px solid var(--fog);
   border-radius: var(--radius-sm);
@@ -192,7 +192,7 @@
 .catalog-empty-icon {
   width: 60px; height: 60px;
   border-radius: 50%;
-  background: var(--white);
+  background: var(--surface);
   color: var(--steel-blue);
   display: flex; align-items: center; justify-content: center;
   margin-bottom: var(--space-md);
@@ -204,7 +204,7 @@
 
 /* ---------- Tarjeta de producto ---------- */
 .catalog-card {
-  background: var(--white);
+  background: var(--surface);
   border: 1px solid var(--fog);
   border-radius: var(--radius-md);
   overflow: hidden;
@@ -267,20 +267,9 @@
 .catalog-card-name { font-size: 0.92rem; font-weight: 700; color: var(--ink); line-height: 1.3; min-height: 2.4em; }
 
 .catalog-price-row { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
-.catalog-price-current { font-family: var(--font-display); font-size: 1.2rem; color: var(--navy); font-weight: 600; }
+.catalog-price-current { font-family: var(--font-display); font-size: 1.2rem; color: var(--heading); font-weight: 600; }
 .catalog-price-old { font-size: 0.8rem; color: var(--steel-gray-light); text-decoration: line-through; }
-/* Etiqueta "+IVA" configurable por producto desde el panel admin */
-.price-iva-tag {
-  font-size: 0.68rem;
-  font-weight: 700;
-  color: var(--steel-gray);
-  background: var(--fog);
-  padding: 2px 7px;
-  border-radius: 4px;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-  white-space: nowrap;
-}
+/* .price-iva-tag ahora vive en css/styles.css (compartido con index.html) */
 
 .catalog-card-actions { display: flex; flex-direction: column; gap: 6px; margin-top: 6px; }
 .catalog-card-actions .btn { width: 100%; }
@@ -314,8 +303,8 @@
   font-family: var(--font-display);
   font-size: 0.88rem;
   font-weight: 500;
-  color: var(--navy);
-  background: var(--white);
+  color: var(--heading);
+  background: var(--surface);
   border: 1.5px solid var(--fog);
   transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
@@ -371,7 +360,7 @@
   top: 0; right: 0; bottom: 0;
   width: 100%;
   max-width: 420px;
-  background: var(--white);
+  background: var(--surface);
   z-index: 160;
   display: flex;
   flex-direction: column;
@@ -411,7 +400,7 @@
   color: var(--steel-gray-light);
 }
 .cart-item-body { flex: 1; min-width: 0; }
-.cart-item-name { font-size: 0.86rem; font-weight: 700; color: var(--navy); }
+.cart-item-name { font-size: 0.86rem; font-weight: 700; color: var(--heading); }
 .cart-item-price { font-size: 0.82rem; color: var(--steel-gray); margin-top: 2px; }
 
 .qty-row { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
@@ -419,7 +408,7 @@
   width: 24px; height: 24px;
   border-radius: 6px;
   background: var(--fog);
-  color: var(--navy);
+  color: var(--heading);
   display: flex; align-items: center; justify-content: center;
   font-weight: 700;
 }
@@ -440,7 +429,7 @@
   margin-bottom: var(--space-sm);
 }
 .cart-total-row .label { font-size: 0.85rem; color: var(--steel-gray); }
-.cart-total-row .value { font-family: var(--font-display); font-size: 1.3rem; color: var(--navy); }
+.cart-total-row .value { font-family: var(--font-display); font-size: 1.3rem; color: var(--heading); }
 
 /* ---------- Modal genérico (overlay) ---------- */
 .modal-overlay {
@@ -457,7 +446,7 @@
 }
 .modal-overlay.is-visible { opacity: 1; visibility: visible; }
 .modal-overlay .panel {
-  background: var(--white);
+  background: var(--surface);
   border: 1px solid var(--fog);
   border-radius: var(--radius-md);
   padding: var(--space-md);
@@ -475,7 +464,7 @@
   color: var(--steel-gray);
   flex-shrink: 0;
 }
-.modal-close-btn:hover { background: var(--fog); color: var(--navy); }
+.modal-close-btn:hover { background: var(--fog); color: var(--heading); }
 .modal-close-btn svg { width: 18px; height: 18px; }
 .modal-panel-head {
   display: flex;
@@ -517,7 +506,7 @@
   height: auto;
   object-fit: contain;
   border-radius: var(--radius-md);
-  background: var(--white);
+  background: var(--surface);
   box-shadow: var(--shadow-lg);
 }
 .img-lightbox-close {
@@ -571,7 +560,7 @@
 .sheet-media svg { width: 44px; height: 44px; }
 .sheet-info .brand { font-size: 0.78rem; color: var(--steel-gray-light); text-transform: uppercase; letter-spacing: 0.5px; }
 .sheet-info h3 { font-size: 1.15rem; text-transform: uppercase; margin-top: 4px; }
-.sheet-info .price { font-family: var(--font-display); font-size: 1.4rem; color: var(--navy); margin-top: 8px; }
+.sheet-info .price { font-family: var(--font-display); font-size: 1.4rem; color: var(--heading); margin-top: 8px; }
 .sheet-info .desc { font-size: 0.9rem; color: var(--steel-gray); margin-top: 10px; line-height: 1.6; }
 .sheet-info .specs { font-size: 0.86rem; color: var(--ink); margin-top: 10px; white-space: pre-line; background: var(--off-white); padding: 10px 12px; border-radius: var(--radius-sm); }
 .sheet-info .sheet-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: var(--space-md); }
