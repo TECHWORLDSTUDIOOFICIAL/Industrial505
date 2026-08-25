@@ -370,6 +370,7 @@ async function loadProductosDestacados() {
             <div class="price-row">
               <span class="price-current">${formatCurrency(hasDiscount ? p.precio_descuento : p.precio)}</span>
               ${hasDiscount ? `<span class="price-old">${formatCurrency(p.precio)}</span>` : ""}
+              ${p.mostrar_iva ? `<span class="price-iva-tag">+IVA</span>` : ""}
             </div>
             <a class="btn btn-ghost-navy btn-sm btn-block" href="catalogo.html?producto=${encodeURIComponent(p.slug || p.id)}">Ver producto</a>
           </div>
